@@ -6,13 +6,14 @@ from pathlib import Path
 from typing import Any, Generator
 
 import pytest
+from _pytest.config import Config, Parser
 from _pytest.fixtures import FixtureRequest
 from _pytest.main import Session
 from _pytest.python import Function
 
 from pytest_plugins.helper import save_as_json, serialize_data
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
-from pytest_plugins.pytest_helper import get_test_full_name, get_test_name_without_parameters
+from pytest_plugins.pytest_helper import get_test_full_name, get_test_name_without_parameters, flag_is_enabled
 
 global_interface = {}  # This variable is used to store the global interface object, if needed
 execution_results = {}
@@ -20,7 +21,7 @@ test_results = {}
 logger = logging.getLogger('pytest_plugins.add_better_report')
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser):
     parser.addoption(
         "--better-report-enable",
         action="store_true",
@@ -35,12 +36,8 @@ def pytest_addoption(parser):
     )
 
 
-def _is_enabled(config):
-    return config.getoption("--better-report-enable")
-
-
-def pytest_configure(config):
-    if _is_enabled(config):
+def pytest_configure(config: Config):
+    if flag_is_enabled(config=config, flag_name="--better-report-enable"):
         config._better_report_enabled = True
     else:
         config._better_report_enabled = False

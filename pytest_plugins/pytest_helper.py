@@ -1,7 +1,13 @@
 import logging
+
+from _pytest.config import Config
 from _pytest.python import Function
 
 logger = logging.getLogger()
+
+
+def flag_is_enabled(config: Config, flag_name: str) -> bool:
+    return config.getoption(flag_name)
 
 
 def get_test_name_without_parameters(item: Function) -> str:

@@ -1,18 +1,19 @@
 import logging
 import pytest
-from _pytest.config import Parser
+from _pytest.config import Config, Parser
 from _pytest.main import Session
 from _pytest.python import Function
+from _pytest.reports import TestReport
 
 from pytest_plugins.add_better_report import test_results
 from pytest_plugins.models import ExecutionStatus
-from pytest_plugins.pytest_helper import get_test_full_name
+from pytest_plugins.pytest_helper import get_test_full_name, flag_is_enabled
 
 logger = logging.getLogger('pytest_plugins.add_better_report')
 global_interface = {}
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser: Parser):
     parser.addoption(
         "--maxfail-streak-enable",
         action="store_true",
@@ -27,12 +28,8 @@ def pytest_addoption(parser):
     )  # for using maxfail not streak, you can use the built-in pytest option `--maxfail`
 
 
-def _is_enabled(config) -> bool:
-    return config.getoption("--maxfail-streak-enable")
-
-
-def pytest_configure(config):
-    if _is_enabled(config):
+def pytest_configure(config: Config):
+    if flag_is_enabled(config=config, flag_name="--maxfail-streak-enable"):
         config._max_fail_streak_enabled = True
     else:
         config._max_fail_streak_enabled = False
@@ -64,7 +61,7 @@ def pytest_runtest_setup(item: Function) -> None:
         logger.debug(f"Test class {item.cls.__name__} has parameter 'component' with value: {item.cls.component}")
 
 
-def pytest_runtest_logreport(report):
+def pytest_runtest_logreport(report: TestReport):
     if report.when == "call":
         global_interface['fail_streak'] = global_interface['fail_streak'] + 1 if report.failed else 0
 
