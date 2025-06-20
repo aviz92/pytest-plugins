@@ -20,6 +20,15 @@ test_results = {}
 logger = logging.getLogger('pytest_plugins.add_better_report')
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--better-report-enable",
+        action="store_true",
+        default=False,
+        help="Enable the pytest-better-report plugin",
+    )
+
+
 def _is_enabled(config):
     return config.getoption("--better-report")
 

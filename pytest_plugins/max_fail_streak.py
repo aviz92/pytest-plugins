@@ -8,6 +8,21 @@ logger = logging.getLogger('pytest_plugins.add_better_report')
 global_interface = {}
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--maxfail-streak-enable",
+        action="store_true",
+        default=False,
+        help="Enable the pytest-max-fail-streak plugin",
+    )
+    parser.addoption(
+        "--maxfail-streak",
+        action="store",
+        default=None,
+        help="Maximum consecutive test failures before stopping execution"
+    )  # for using maxfail not streak, you can use the built-in pytest option `--maxfail`
+
+
 def _is_enabled(config) -> bool:
     return config.getoption("--maxfail-streak")
 
