@@ -36,6 +36,7 @@ setup(
     entry_points={
         "pytest11": [
             "better_report = pytest_plugins.add_better_report",
+            "max_fail_streak = pytest_plugins.max_fail_streak",
         ]
     },
     classifiers=[

@@ -20,15 +20,6 @@ test_results = {}
 logger = logging.getLogger('pytest_plugins.add_better_report')
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        "--better-report",
-        action="store_true",
-        default=False,
-        help="Enable the pytest-better-report plugin",
-    )
-
-
 def _is_enabled(config):
     return config.getoption("--better-report")
 
@@ -93,12 +84,6 @@ def session_setup_teardown() -> Generator[None, Any, None]:
 
     save_as_json(path=Path('results_output/execution_results.json'), data=execution_results, default=serialize_data)
     save_as_json(path=Path('results_output/test_results.json'), data=test_results, default=serialize_data)
-
-    # # log the execution results
-    # logger.debug(f'Execution Results: \n{json.dumps(execution_results, indent=4, default=serialize_data)}')
-    #
-    # # log the test results
-    # logger.debug(f'Test Results: \n{json.dumps(test_results, indent=4, default=serialize_data)}')
 
 
 @pytest.fixture(autouse=True)
