@@ -1,8 +1,9 @@
 import logging
+from typing import Any
+
 import pytest
 from _pytest.config import Config, Parser
-from _pytest.reports import TestReport
-from _pytest.outcomes import Skipped
+from _pytest.python import Function
 
 from pytest_plugins.add_better_report import test_results
 from pytest_plugins.models import ExecutionStatus
@@ -27,8 +28,8 @@ def pytest_configure(config: Config) -> None:
     config._fail2skip_enabled = config.getoption("--fail2skip-enable")
 
 
-@pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_makereport(item, call):
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item: Function, call: Any):
     outcome = yield
     report = outcome.get_result()
     if (

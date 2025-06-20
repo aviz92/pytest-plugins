@@ -21,7 +21,7 @@ test_results = {}
 logger = logging.getLogger('pytest_plugins.add_better_report')
 
 
-def pytest_addoption(parser: Parser):
+def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
         "--better-report-enable",
         action="store_true",
@@ -36,7 +36,7 @@ def pytest_addoption(parser: Parser):
     )
 
 
-def pytest_configure(config: Config):
+def pytest_configure(config: Config) -> None:
     if flag_is_enabled(config=config, flag_name="--better-report-enable"):
         config._better_report_enabled = True
     else:
@@ -44,7 +44,6 @@ def pytest_configure(config: Config):
 
 
 def pytest_sessionstart(session: Session) -> None:
-    """Called before the test session starts."""
     global_interface['session'] = session  # Store the session object in the global interface
 
     execution_results["execution_info"] = ExecutionData(
@@ -52,12 +51,11 @@ def pytest_sessionstart(session: Session) -> None:
         execution_status=ExecutionStatus.STARTED,
         execution_start_time=datetime.now(timezone.utc).isoformat(),
     )
+    logger.debug("Better report: Test session started")
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(items: list[Function]) -> None:
-    """ This hook is called after the collection has been performed, but before the tests are executed """
-
     for item in items:
         test_name = get_test_name_without_parameters(item=item)
         test_full_name = get_test_full_name(item=item)
@@ -77,55 +75,75 @@ def pytest_collection_modifyitems(items: list[Function]) -> None:
 @pytest.fixture(scope="session", autouse=True)
 def session_setup_teardown() -> Generator[None, Any, None]:
     yield
+    exec_info = execution_results.get("execution_info")
+    if not exec_info:
+        logger.error("Execution info missing at session teardown")
+        return
 
     # update execution end time
-    execution_results["execution_info"].execution_end_time = datetime.now(timezone.utc).isoformat()
+    exec_info.execution_end_time = datetime.now(timezone.utc).isoformat()
 
     # update execution duration time
-    execution_start_time_obj = datetime.fromisoformat(execution_results["execution_info"].execution_start_time)
-    execution_end_time_obj = datetime.fromisoformat(execution_results["execution_info"].execution_end_time)
-    execution_results["execution_info"].execution_duration_sec = \
-        (execution_end_time_obj - execution_start_time_obj).total_seconds()
+    try:
+        start_obj = datetime.fromisoformat(exec_info.execution_start_time)
+        end_obj = datetime.fromisoformat(exec_info.execution_end_time)
+        exec_info.execution_duration_sec = (end_obj - start_obj).total_seconds()
+    except Exception as e:
+        logger.error(f"Error computing execution duration: {e}")
+        exec_info.execution_duration_sec = None
+
 
     # update execution status
-    _execution_status = all(test.test_status == ExecutionStatus.PASSED for test in test_results.values())
-    execution_results["execution_info"].execution_status = \
-        ExecutionStatus.PASSED if _execution_status else ExecutionStatus.FAILED
+    exec_info.execution_status = (
+        ExecutionStatus.PASSED if all(t.test_status == ExecutionStatus.PASSED for t in test_results.values())
+        else ExecutionStatus.FAILED
+    )
 
-    execution_results["execution_info"].test_list = list(test_results.keys())
+    exec_info.test_list = list(test_results.keys())
 
-    save_as_json(path=Path('results_output/execution_results.json'), data=execution_results, default=serialize_data)
-    save_as_json(path=Path('results_output/test_results.json'), data=test_results, default=serialize_data)
+    output_dir = Path('results_output')
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    save_as_json(path=output_dir / 'execution_results.json', data=execution_results, default=serialize_data)
+    save_as_json(path=output_dir / 'test_results.json', data=test_results, default=serialize_data)
+    logger.info("Better report: Execution results saved")
 
 
 @pytest.fixture(autouse=True)
-def report_test_results_to_automation_db(request: FixtureRequest) -> None:
+def save_test_results(request: FixtureRequest) -> None:
     test_item = request.node
-
-    # log the test results after each test.
     test_full_name = get_test_full_name(item=test_item)
-    logger.debug(f'Test Results: \n{json.dumps(test_results[test_full_name], indent=4, default=serialize_data)}')
+    if test_full_name in test_results:
+        logger.debug(f'Test Results: \n{json.dumps(test_results[test_full_name], indent=4, default=serialize_data)}')
+    else:
+        logger.warning(f"Test {test_full_name} missing in test_results during report")
 
 
 def pytest_runtest_teardown(item: Function) -> None:
-    """This runs after each test."""
-
     test_full_name = get_test_full_name(item=item)
     test_item = test_results[test_full_name]
+    if not test_item:
+        logger.warning(f"Test {test_full_name} missing in test_results during teardown")
+        return
 
     test_item.test_end_time = datetime.now(timezone.utc).isoformat()
     if test_item.test_start_time:  # Add test duration only if start time is set
-        test_start_time_obj = datetime.fromisoformat(test_item.test_start_time)
-        test_end_time_obj = datetime.fromisoformat(test_item.test_end_time)
-        test_item.test_duration_sec = (test_end_time_obj - test_start_time_obj).total_seconds()
+        try:
+            start_obj = datetime.fromisoformat(test_item.test_start_time)
+            end_obj = datetime.fromisoformat(test_item.test_end_time)
+            test_item.test_duration_sec = (end_obj - start_obj).total_seconds()
+        except Exception as e:
+            logger.error(f"Error computing test duration for {test_full_name}: {e}")
 
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_makereport(item: Function, call: Any) -> None:
-    """ This hook is called after each test is run """
-
     if call.when == "call":
-        test_item = test_results[get_test_full_name(item=item)]
+        test_full_name = get_test_full_name(item=item)
+        test_item = test_results.get(test_full_name)
+        if not test_item:
+            logger.warning(f"Test {test_full_name} missing in test_results during makereport")
+            return
 
         test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
 
@@ -143,10 +161,8 @@ def pytest_runtest_makereport(item: Function, call: Any) -> None:
 
 
 def pytest_sessionfinish(session: Session) -> None:
-    """Called after the whole test session finishes."""
-
     exit_status_code = session.session.exitstatus
     logger.info(f'Test session finished with exit status: {exit_status_code}')
     if exit_status_code != 0:
-        failed_tests = [v for k, v in test_results.items() if v.test_status == ExecutionStatus.FAILED]
+        failed_tests = [v for v in test_results.values() if v.test_status == ExecutionStatus.FAILED]
         logger.debug(f'Failed tests: {json.dumps(failed_tests, indent=4, default=serialize_data)}')
