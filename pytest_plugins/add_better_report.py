@@ -72,23 +72,6 @@ def pytest_collection_modifyitems(items: list[Function]) -> None:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def report_execution_results_to_automation_db(request: FixtureRequest) -> Generator[None, Any, None]:
-    logger.debug(
-        f'Report the "execution_results" to the AutomationDB. \n'
-        f'Execution Start Time: {execution_results["execution_info"].execution_start_time}, \n'
-        f'Execution Status: {execution_results["execution_info"].execution_status}, \n'
-        f'Pull Request Number: {execution_results["execution_info"].pull_request_number}.'
-    )
-    yield
-    logger.debug(
-        f'Report the "execution_results" to the AutomationDB. \n'
-        f'Execution Status: {execution_results["execution_info"].execution_status}, \n'
-        f'Execution End Time: {execution_results["execution_info"].execution_end_time}, \n'
-        f'Execution Duration: {execution_results["execution_info"].execution_duration_sec} seconds.'
-    )
-
-
-@pytest.fixture(scope="session", autouse=True)
 def session_setup_teardown() -> Generator[None, Any, None]:
     yield
 
