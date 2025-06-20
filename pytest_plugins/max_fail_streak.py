@@ -4,6 +4,10 @@ from _pytest.config import Parser
 from _pytest.main import Session
 from _pytest.python import Function
 
+from pytest_plugins.add_better_report import test_results
+from pytest_plugins.models import ExecutionStatus
+from pytest_plugins.pytest_helper import get_test_full_name
+
 logger = logging.getLogger('pytest_plugins.add_better_report')
 global_interface = {}
 
@@ -48,11 +52,12 @@ def pytest_runtest_setup(item: Function) -> None:
             global_interface['fail_streak'] >= global_interface['max_fail_streak']
     ):
         _skip_message = 'Skipping test due to maximum consecutive failures reached.'
-        # test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.SKIPPED
-        # test_results[get_test_full_name(item=item)].exception_message = {
-        #     "exception_type": "MaxFailStreakReached",
-        #     "message": _skip_message,
-        # }
+
+        test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.SKIPPED
+        test_results[get_test_full_name(item=item)].exception_message = {
+            "exception_type": "MaxFailStreakReached",
+            "message": _skip_message,
+        }
         pytest.skip(_skip_message)
 
     if getattr(item.cls, 'component', None):
