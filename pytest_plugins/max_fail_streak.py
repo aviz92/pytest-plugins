@@ -24,7 +24,7 @@ def pytest_addoption(parser):
 
 
 def _is_enabled(config) -> bool:
-    return config.getoption("--maxfail-streak")
+    return config.getoption("--maxfail-streak-enable")
 
 
 def pytest_configure(config):

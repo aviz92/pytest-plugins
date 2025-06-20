@@ -30,7 +30,7 @@ def pytest_addoption(parser):
 
 
 def _is_enabled(config):
-    return config.getoption("--better-report")
+    return config.getoption("--better-report-enable")
 
 
 def pytest_configure(config):
