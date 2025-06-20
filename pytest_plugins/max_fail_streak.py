@@ -26,7 +26,7 @@ def pytest_sessionstart(session: Session) -> None:
     global_interface['fail_streak'] = 0
 
 
-def pytest_runtest_setup(item: Function) -> None:  # TODO: Check if this is needed
+def pytest_runtest_setup(item: Function) -> None:
     """This runs before each test."""
     if (
             global_interface['max_fail_streak'] and
