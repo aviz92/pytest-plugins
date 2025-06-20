@@ -33,5 +33,14 @@ setup(
     project_urls={
         'Repository': package_url,
     },
+    entry_points={
+        "pytest11": [
+            "better_report = pytest_plugins.add_better_report",
+        ]
+    },
+    classifiers=[
+        "Framework :: Pytest",
+        "Programming Language :: Python",
+    ],
     python_requires=package_python_requires,
 )
