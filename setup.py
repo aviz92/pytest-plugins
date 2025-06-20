@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 package_version = '0.0.0'
 
-package_name = 'python-plugins'
+package_name = 'pytest-plugins'
 package_description = 'A Python package for managing plugins.'
 
 package_name_ = package_name.replace('-', '_')
