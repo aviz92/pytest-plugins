@@ -27,6 +27,12 @@ def pytest_addoption(parser):
         default=False,
         help="Enable the pytest-better-report plugin",
     )
+    parser.addoption(
+        "--pr-number",
+        action="store",
+        default=None,
+        help="Pull Request Number"
+    )
 
 
 def _is_enabled(config):
