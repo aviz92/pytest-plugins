@@ -32,8 +32,13 @@ def pytest_configure(config: Config) -> None:
 
 
 def pytest_runtest_setup(item: Function) -> None:
-    if not getattr(item.config, 'maxfail-streak', None):
+    if not global_interface.get('max_fail_streak', None):
         return
+
+    max_streak = global_interface['max_fail_streak']
+    fail_streak = global_interface['fail_streak']
+    if max_streak and fail_streak >= max_streak:
+        pytest.skip('asdasdadsd')
 
     max_streak = global_interface['max_fail_streak']
     fail_streak = global_interface['fail_streak']
@@ -50,6 +55,7 @@ def pytest_runtest_setup(item: Function) -> None:
         pytest.skip(_skip_message)
 
 
+@pytest.hookimpl(tryfirst=True)
 def pytest_runtest_logreport(report) -> None:
     if not global_interface.get('max_fail_streak', None):
         return
