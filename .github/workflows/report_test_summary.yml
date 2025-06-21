@@ -1,5 +1,9 @@
 name: Report Test Summary
 
+permissions:
+  pull-requests: write
+  contents: read
+
 on: [ pull_request ]
 
 jobs:
