@@ -24,9 +24,9 @@ def generate_md_report(report: dict) -> str:
         rows.append(f"|{index}| `{name}` | {icon} {status} | {duration} | `{msg}` |")
 
     summary = f"\n🧪 Total: {len(report)} | " + " | ".join(['','',''])
-    total_summary = f"\n🧪 Total: {len(report)} | " + " | ".join(
+    total_summary = f"\n🧪 Total: {len(report)} &nbsp;&nbsp;| &nbsp;&nbsp;" + " &nbsp;&nbsp;| &nbsp;&nbsp;".join(
         f"{icon} {k.capitalize()}: {v}" for k, v in stats.items()
         for icon in [status_icons.get(k, "")]
     )
 
-    return "## ✅ Test Report Summary\n\n" + "\n".join(rows) + summary + f'\n<br> \nSummary: <br> \n{total_summary}'
+    return "## ✅ Test Report Summary\n\n" + "\n".join(rows) + summary + f'\n<br> \n\n### Summary: <br> \n{total_summary}'

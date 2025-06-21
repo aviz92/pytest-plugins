@@ -6,6 +6,7 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 
 ## 🚀 Features
 - ✅ **`better-report`**: Enhanced test result tracking and structured JSON reporting.
+  - generate `execution_results.json`, `test_results.json`, and `test_report`.md under `tests/results_output/` directory.
 - ✅ **`maxfail-streak`**: Stop test execution after a configurable number of consecutive failures.
 - ✅ **`fail2skip`**: Change failing tests to skipped, allowing for better test management and reporting.
 
