@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, Generator
 
 import pytest
 from _pytest.config import Config, Parser
@@ -22,25 +22,28 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_configure(config: Config) -> None:
+    if not config.getoption("--fail2skip-enable"):
+        return
+
+    config._fail2skip_enabled = config.getoption("--fail2skip-enable")
     config.addinivalue_line(
         name="markers",
         line="fail2skip: convert failed test to skip instead of fail"
     )
-    config._fail2skip_enabled = config.getoption("--fail2skip-enable")
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtest_makereport(item: Function, call: Any):
+def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
     outcome = yield
     report = outcome.get_result()
+
     if (
-        item.get_closest_marker("fail2skip")
+        getattr(item.config, '_fail2skip_enabled', None)
+        and item.get_closest_marker("fail2skip")
         and call.when == "call"
         and report.outcome == "failed"
-        and item.config.getoption("--fail2skip-enable")
     ):
         report.outcome = "skipped"
         report.longrepr = "fail2skip: forcibly skipped after failure"
         report.wasxfail = "fail2skip"
         test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.FAILED_SKIPPED
-    return report

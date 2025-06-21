@@ -42,10 +42,17 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_configure(config: Config) -> None:
+    if not config.getoption("--better-report-enable"):
+        return
+
     config._better_report_enabled = config.getoption("--better-report-enable")
 
 
 def pytest_sessionstart(session: Session) -> None:
+    if not getattr(session.config, '_better_report_enabled', None):
+        logger.debug("Better report plugin is not enabled, skipping session start processing")
+        return
+
     execution_results["execution_info"] = ExecutionData(
         execution_status=ExecutionStatus.STARTED,
         pull_request_number=session.config.getoption("--pr-number", None),
@@ -56,7 +63,10 @@ def pytest_sessionstart(session: Session) -> None:
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_collection_modifyitems(items: list[Function]) -> None:
+def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None:
+    if not getattr(config, '_better_report_enabled', None):
+        return
+
     for item in items:
         test_name = get_test_name_without_parameters(item=item)
         test_full_name = get_test_full_name(item=item)
@@ -74,8 +84,12 @@ def pytest_collection_modifyitems(items: list[Function]) -> None:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def session_setup_teardown() -> Generator[None, Any, None]:
+def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None]:
     yield
+
+    if not getattr(request.config, '_better_report_enabled', None):
+        return
+
     exec_info = execution_results.get("execution_info")
     if not exec_info:
         logger.error("Execution info missing at session teardown")
@@ -112,6 +126,9 @@ def session_setup_teardown() -> Generator[None, Any, None]:
 
 @pytest.fixture(autouse=True)
 def save_test_results(request: FixtureRequest) -> None:
+    if not getattr(request.config, '_better_report_enabled', None):
+        return
+
     test_item = request.node
     test_full_name = get_test_full_name(item=test_item)
     if test_full_name in test_results:
@@ -121,6 +138,9 @@ def save_test_results(request: FixtureRequest) -> None:
 
 
 def pytest_runtest_teardown(item: Function) -> None:
+    if not getattr(item.config, '_better_report_enabled', None):
+        return
+
     test_full_name = get_test_full_name(item=item)
     test_item = test_results[test_full_name]
     if not test_item:
@@ -137,31 +157,39 @@ def pytest_runtest_teardown(item: Function) -> None:
             logger.error(f"Error computing test duration for {test_full_name}: {e}")
 
 
-@pytest.hookimpl(tryfirst=True)
-def pytest_runtest_makereport(item: Function, call: Any) -> None:
-    if call.when == "call":
-        test_full_name = get_test_full_name(item=item)
-        test_item = test_results.get(test_full_name)
-        if not test_item:
-            logger.warning(f"Test {test_full_name} missing in test_results during makereport")
-            return
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
+    outcome = yield
+    report = outcome.get_result()
 
-        test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
+    if report.when != "call" or not getattr(item.config, '_better_report_enabled', None):
+        return
 
-        if call.excinfo:
-            exception_message = str(call.excinfo.value).split('\nassert')[0]
-            try:
-                test_item.exception_message = json.loads(exception_message)
-            except json.JSONDecodeError:
-                test_item.exception_message = {
-                    'exception_type': call.excinfo.typename if call.excinfo else None,
-                    'message': exception_message if call.excinfo else None,
-                }
-        else:
-            test_item.exception_message = None
+    test_full_name = get_test_full_name(item=item)
+    test_item = test_results.get(test_full_name)
+    if not test_item:
+        logger.warning(f"Test {test_full_name} missing in test_results during makereport")
+        return
+
+    test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
+
+    if call.excinfo:
+        exception_message = str(call.excinfo.value).split('\nassert')[0]
+        try:
+            test_item.exception_message = json.loads(exception_message)
+        except json.JSONDecodeError:
+            test_item.exception_message = {
+                'exception_type': call.excinfo.typename if call.excinfo else None,
+                'message': exception_message if call.excinfo else None,
+            }
+    else:
+        test_item.exception_message = None
 
 
 def pytest_sessionfinish(session: Session) -> None:
+    if not getattr(session.config, '_better_report_enabled', None):
+        return
+
     exit_status_code = session.session.exitstatus
     logger.info(f'Test session finished with exit status: {exit_status_code}')
     if exit_status_code != 0:

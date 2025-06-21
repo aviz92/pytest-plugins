@@ -38,6 +38,7 @@ setup(
             "better_report = pytest_plugins.better_report",
             "max_fail_streak = pytest_plugins.max_fail_streak",
             "fail2skip = pytest_plugins.fail2skip",
+            "add_config_parameters = pytest_plugins.add_config_parameters",
         ]
     },
     classifiers=[

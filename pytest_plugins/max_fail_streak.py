@@ -29,6 +29,9 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_configure(config: Config) -> None:
+    if not config.getoption("--maxfail-streak-enable"):
+        return
+
     config._max_fail_streak_enabled = config.getoption("--maxfail-streak-enable")
     _max_fail_streak = config.getoption("--maxfail-streak")
     global_interface['max_fail_streak'] = int(_max_fail_streak) if _max_fail_streak else None
@@ -36,6 +39,9 @@ def pytest_configure(config: Config) -> None:
 
 
 def pytest_runtest_setup(item: Function) -> None:
+    if not getattr(item.config, '_max_fail_streak_enabled', None):
+        return
+
     max_streak = global_interface['max_fail_streak']
     fail_streak = global_interface['fail_streak']
     if max_streak and fail_streak >= max_streak:
@@ -52,6 +58,9 @@ def pytest_runtest_setup(item: Function) -> None:
 
 
 def pytest_runtest_logreport(report: TestReport) -> None:
+    if not getattr(report.config, '_max_fail_streak_enabled', None):
+        return
+
     if report.when == "call":
         global_interface['fail_streak'] = global_interface['fail_streak'] + 1 if report.failed else 0
 
