@@ -46,4 +46,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         report.outcome = "skipped"
         report.longrepr = "fail2skip: forcibly skipped after failure"
         report.wasxfail = "fail2skip"
-        test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.FAILED_SKIPPED
+
+        if get_test_full_name(item=item) in test_results:
+            test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.FAILED_SKIPPED

@@ -50,8 +50,8 @@ def pytest_runtest_setup(item: Function) -> None:
         pytest.skip(_skip_message)
 
 
-def pytest_runtest_logreport(report: TestReport) -> None:
-    if not getattr(report.config, 'maxfail-streak', None):
+def pytest_runtest_logreport(report) -> None:
+    if not global_interface.get('max_fail_streak', None):
         return
 
     if report.when == "call":
