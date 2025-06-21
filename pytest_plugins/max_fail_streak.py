@@ -2,7 +2,6 @@ import logging
 import pytest
 from _pytest.config import Config, Parser
 from _pytest.python import Function
-from _pytest.reports import TestReport
 
 from pytest_plugins.better_report import test_results
 from pytest_plugins.models import ExecutionStatus
