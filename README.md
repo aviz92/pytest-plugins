@@ -5,9 +5,9 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 ---
 
 ## 🚀 Features
-- ✅ **`pytest-better-report`**: Enhanced test result tracking and structured JSON reporting.
-- ✅ **`pytest-maxfail-streak`**: Stop test execution after a configurable number of consecutive failures.
-- ✅ **`pytest-fail2skip`**: Automatically skip tests that fail due to known issues, preventing unnecessary test runs.
+- ✅ **`better-report`**: Enhanced test result tracking and structured JSON reporting.
+- ✅ **`maxfail-streak`**: Stop test execution after a configurable number of consecutive failures.
+- ✅ **`fail2skip`**: Change failing tests to skipped, allowing for better test management and reporting.
 
 ---
 
@@ -17,6 +17,8 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
   - pytest --better-report --pr-number=123
 - pytest-maxfail-streak
   - pytest --maxfail-streak=3
+    - default value of 3
+    - for using without a streak, use the built-in `--maxfail` option
 - pytest-fail2skip
   - pytest --fail2skip # must add `@pytest.mark.fail2skip` decorator to the test function
 
