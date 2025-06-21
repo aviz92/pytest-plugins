@@ -47,7 +47,7 @@ jobs:
       - name: New comment summary on PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          filePath: tests/reports/test_summary.md
+          filePath: scripts/reports/test_summary.md
 
       - name: Fail job if tests failed
         run: |
