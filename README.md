@@ -11,6 +11,13 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 
 ---
 
+## 📦 Installation
+```bash
+pip install pytest-plugins
+```
+
+---
+
 ### 🔧 Usage
 - pytest-better-report
   - pytest --better-report
