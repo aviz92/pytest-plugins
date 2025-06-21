@@ -27,8 +27,6 @@ jobs:
 
       - name: Run tests
         run: |
-          pwd
-          ls -l 
           cd tests
           pytest test_dummy.py -m test_pass -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
           PYTEST_EXIT_CODE=$?
@@ -37,7 +35,10 @@ jobs:
 
       - name: Run test summary and generate markdown
         run: |
-          python scripts/summarize_tests.py $GITHUB_SHA
+          pwd
+          ls -l 
+          cd scripts
+          python summarize_tests.py $GITHUB_SHA
 
       - name: Upload test summary artifact
         uses: actions/upload-artifact@v4
