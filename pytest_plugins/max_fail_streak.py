@@ -40,11 +40,12 @@ def pytest_runtest_setup(item: Function) -> None:
         _skip_message = 'Skipping test due to maximum consecutive failures reached.'
 
         test_name = get_test_full_name(item=item)
-        test_results[test_name].test_status = ExecutionStatus.SKIPPED
-        test_results[test_name].exception_message = {
-            "exception_type": "MaxFailStreakReached",
-            "message": _skip_message,
-        }
+        if test_name in test_results:
+            test_results[test_name].test_status = ExecutionStatus.SKIPPED
+            test_results[test_name].exception_message = {
+                "exception_type": "MaxFailStreakReached",
+                "message": _skip_message,
+            }
         logger.info(f"Skipping test {test_name} because fail streak {fail_streak} reached max {max_streak}")
         pytest.skip(_skip_message)
 
