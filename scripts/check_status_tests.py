@@ -13,8 +13,8 @@ def summarize_tests(json_path: str):
     counts = Counter(statuses)
 
     logger.info(f"Filed tests == {True if counts.get('failed', 0) else False}")
-    # if counts.get("failed", 0):
-    #     exit(1)
+    if counts.get("failed", 0):
+        exit(1)
 
 
 if __name__ == "__main__":
