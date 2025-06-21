@@ -37,8 +37,6 @@ def pytest_runtest_setup(item: Function) -> None:
 
     max_streak = global_interface['max_fail_streak']
     fail_streak = global_interface['fail_streak']
-    if max_streak and fail_streak >= max_streak:
-        pytest.skip('asdasdadsd')
 
     max_streak = global_interface['max_fail_streak']
     fail_streak = global_interface['fail_streak']
