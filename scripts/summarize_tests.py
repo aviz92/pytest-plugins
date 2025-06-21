@@ -49,7 +49,7 @@ def main():
     logger.info(f"Commit hash: {commit_hash}")
 
     summarize_tests(
-        json_path="../tests/results_output/test_results.json",
+        json_path="results_output/test_results.json",
         output_md_path=Path("reports/test_summary.md"),
         commit_hash=commit_hash
     )
