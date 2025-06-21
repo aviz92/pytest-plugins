@@ -6,8 +6,9 @@ from pytest_plugins.models.status import ExecutionStatus
 
 @dataclass
 class ExecutionData:
-    pull_request_number: Optional[str]
     execution_status: ExecutionStatus
+    pull_request_number: Optional[str]
+    merge_request_number: Optional[str]
     execution_start_time: Optional[str] = None
     execution_end_time: Optional[str] = None
     execution_duration_sec: Optional[str] = None

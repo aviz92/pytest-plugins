@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-package_version = '0.1.4'
+package_version = '0.1.5'
 
 package_name = 'pytest-plugins'
 package_description = 'A Python package for managing pytest plugins.'
@@ -35,7 +35,7 @@ setup(
     },
     entry_points={
         "pytest11": [
-            "better_report = pytest_plugins.add_better_report",
+            "better_report = pytest_plugins.better_report",
             "max_fail_streak = pytest_plugins.max_fail_streak",
             "fail2skip = pytest_plugins.fail2skip",
         ]

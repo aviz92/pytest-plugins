@@ -13,12 +13,11 @@ from _pytest.python import Function
 
 from pytest_plugins.helper import save_as_json, serialize_data
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
-from pytest_plugins.pytest_helper import get_test_full_name, get_test_name_without_parameters, flag_is_enabled
+from pytest_plugins.pytest_helper import get_test_full_name, get_test_name_without_parameters
 
-global_interface = {}  # This variable is used to store the global interface object, if needed
 execution_results = {}
 test_results = {}
-logger = logging.getLogger('pytest_plugins.add_better_report')
+logger = logging.getLogger('pytest_plugins.better_report')
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -34,21 +33,23 @@ def pytest_addoption(parser: Parser) -> None:
         default=None,
         help="Pull Request Number"
     )
+    parser.addoption(
+        "--mr-number",
+        action="store",
+        default=None,
+        help="Merge Request Number"
+    )
 
 
 def pytest_configure(config: Config) -> None:
-    if flag_is_enabled(config=config, flag_name="--better-report-enable"):
-        config._better_report_enabled = True
-    else:
-        config._better_report_enabled = False
+    config._better_report_enabled = config.getoption("--better-report-enable")
 
 
 def pytest_sessionstart(session: Session) -> None:
-    global_interface['session'] = session  # Store the session object in the global interface
-
     execution_results["execution_info"] = ExecutionData(
-        pull_request_number=session.config.getoption("--pr-number", None),
         execution_status=ExecutionStatus.STARTED,
+        pull_request_number=session.config.getoption("--pr-number", None),
+        merge_request_number=session.config.getoption("--mr-number", None),
         execution_start_time=datetime.now(timezone.utc).isoformat(),
     )
     logger.debug("Better report: Test session started")
