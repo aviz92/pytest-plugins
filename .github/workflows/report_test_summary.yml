@@ -23,16 +23,14 @@ jobs:
 
       - name: Run tests
         run: |
-          cd tests
-          pytest test_dummy.py -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
+          pytest tests/test_dummy.py -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
           PYTEST_EXIT_CODE=$?
           set -e
         continue-on-error: true
 
       - name: Run test summary and generate markdown
         run: |
-          cd scripts
-          python summarize_tests.py $GITHUB_SHA
+          python scripts/summarize_tests.py $GITHUB_SHA
 
       - name: Upload test summary artifact
         uses: actions/upload-artifact@v4
@@ -47,5 +45,4 @@ jobs:
 
       - name: Fail job if tests failed
         run: |
-          cd scripts
-          python check_status_tests.py
+          python scripts/check_status_tests.py
