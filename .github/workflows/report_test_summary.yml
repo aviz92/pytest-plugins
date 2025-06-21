@@ -27,7 +27,7 @@ jobs:
 
       - name: Run tests
         run: |
-          cd tests
+          cd /tests
           pytest test_dummy.py -m test_pass -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
           PYTEST_EXIT_CODE=$?
           set -e
