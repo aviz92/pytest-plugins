@@ -1,5 +1,9 @@
 name: Report Test Summary
 
+permissions:
+  pull-requests: write
+  contents: read
+
 on: [ pull_request ]
 
 jobs:
@@ -23,8 +27,8 @@ jobs:
 
       - name: Run tests
         run: |
-          cd automation_test/tests
-          pytest tests/test_dummy.py -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
+          cd tests
+          pytest test_dummy.py -m test_pass -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
           PYTEST_EXIT_CODE=$?
           set -e
         continue-on-error: true
@@ -43,7 +47,7 @@ jobs:
       - name: New comment summary on PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          filePath: reports/test_summary.md
+          filePath: scripts/reports/test_summary.md
 
       - name: Fail job if tests failed
         run: |

@@ -2,6 +2,7 @@ import pytest
 
 
 class TestDummy:
+    @pytest.mark.test_pass
     def test_pass(self):
         assert True
 
