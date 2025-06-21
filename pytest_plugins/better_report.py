@@ -22,7 +22,7 @@ logger = logging.getLogger('pytest_plugins.better_report')
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
-        "--better-report-enable",
+        "--better-report",
         action="store_true",
         default=False,
         help="Enable the pytest-better-report plugin",
@@ -42,10 +42,10 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_configure(config: Config) -> None:
-    if not config.getoption("--better-report-enable"):
+    if not config.getoption("--better-report"):
         return
 
-    config._better_report_enabled = config.getoption("--better-report-enable")
+    config._better_report_enabled = config.getoption("--better-report")
 
 
 def pytest_sessionstart(session: Session) -> None:

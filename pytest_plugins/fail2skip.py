@@ -14,7 +14,7 @@ logger = logging.getLogger("pytest_plugins.fail2skip")
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
-        "--fail2skip-enable",
+        "--fail2skip",
         action="store_true",
         default=False,
         help="Enable converting failed tests marked with @pytest.mark.fail2skip into skipped.",
@@ -22,10 +22,10 @@ def pytest_addoption(parser: Parser) -> None:
 
 
 def pytest_configure(config: Config) -> None:
-    if not config.getoption("--fail2skip-enable"):
+    if not config.getoption("--fail2skip"):
         return
 
-    config._fail2skip_enabled = config.getoption("--fail2skip-enable")
+    config._fail2skip_enabled = config.getoption("--fail2skip")
     config.addinivalue_line(
         name="markers",
         line="fail2skip: convert failed test to skip instead of fail"

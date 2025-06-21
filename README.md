@@ -13,18 +13,18 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 
 ### 🔧 Usage
 - pytest-better-report
-  - pytest --better-report-enable
-  - pytest --better-report-enable --pr-number=123
+  - pytest --better-report
+  - pytest --better-report --pr-number=123
 - pytest-maxfail-streak
   - pytest --maxfail-streak=3
 - pytest-fail2skip
-  - pytest --fail2skip-enable # must add `@pytest.mark.fail2skip` decorator to the test function
+  - pytest --fail2skip # must add `@pytest.mark.fail2skip` decorator to the test function
 
 or use the `pytest.ini` configuration file to set default values for these plugins.
 
 ```ini
 [pytest]
-addopts = --better-report-enable --pr-number=123 --maxfail-streak=3 --fail2skip-enable
+addopts = --better-report --pr-number=123 --maxfail-streak=3 --fail2skip
 ```
 
 ---
