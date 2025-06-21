@@ -35,8 +35,6 @@ jobs:
 
       - name: Run test summary and generate markdown
         run: |
-          pwd
-          ls -l 
           cd scripts
           python summarize_tests.py $GITHUB_SHA
 
@@ -49,8 +47,9 @@ jobs:
       - name: New comment summary on PR
         uses: thollander/actions-comment-pull-request@v2
         with:
-          filePath: reports/test_summary.md
+          filePath: tests/reports/test_summary.md
 
       - name: Fail job if tests failed
         run: |
-          python scripts/check_status_tests.py
+          cd scripts
+          python check_status_tests.py
