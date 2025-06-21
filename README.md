@@ -17,7 +17,6 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
   - pytest --better-report --pr-number=123
 - pytest-maxfail-streak
   - pytest --maxfail-streak=3
-    - default value of 3
     - for using without a streak, use the built-in `--maxfail` option
 - pytest-fail2skip
   - pytest --fail2skip # must add `@pytest.mark.fail2skip` decorator to the test function

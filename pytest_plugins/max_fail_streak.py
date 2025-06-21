@@ -15,7 +15,7 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
         "--maxfail-streak",
         action="store",
-        default=3,
+        default=None,
         help="Maximum consecutive test failures before stopping execution (Default is 3). "
              "for using maxfail not streak use the built-in pytest option `--maxfail`",
     )
