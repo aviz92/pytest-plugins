@@ -14,32 +14,25 @@ global_interface = {}
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
-        "--maxfail-streak-enable",
-        action="store_true",
-        default=False,
-        help="Enable the pytest-max-fail-streak plugin",
-    )
-    parser.addoption(
         "--maxfail-streak",
         action="store",
-        default=None,
-        help="Maximum consecutive test failures before stopping execution. "
+        default=3,
+        help="Maximum consecutive test failures before stopping execution (Default is 3). "
              "for using maxfail not streak use the built-in pytest option `--maxfail`",
     )
 
 
 def pytest_configure(config: Config) -> None:
-    if not config.getoption("--maxfail-streak-enable"):
+    if not config.getoption("--maxfail-streak"):
         return
 
-    config._max_fail_streak_enabled = config.getoption("--maxfail-streak-enable")
     _max_fail_streak = config.getoption("--maxfail-streak")
     global_interface['max_fail_streak'] = int(_max_fail_streak) if _max_fail_streak else None
     global_interface['fail_streak'] = 0
 
 
 def pytest_runtest_setup(item: Function) -> None:
-    if not getattr(item.config, '_max_fail_streak_enabled', None):
+    if not getattr(item.config, 'maxfail-streak', None):
         return
 
     max_streak = global_interface['max_fail_streak']
@@ -58,7 +51,7 @@ def pytest_runtest_setup(item: Function) -> None:
 
 
 def pytest_runtest_logreport(report: TestReport) -> None:
-    if not getattr(report.config, '_max_fail_streak_enabled', None):
+    if not getattr(report.config, 'maxfail-streak', None):
         return
 
     if report.when == "call":
