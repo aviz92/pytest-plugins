@@ -11,12 +11,15 @@ from _pytest.fixtures import FixtureRequest
 from _pytest.main import Session
 from _pytest.python import Function
 
-from pytest_plugins.helper import save_as_json, serialize_data
+from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
-from pytest_plugins.pytest_helper import get_test_full_name, get_test_name_without_parameters
+from pytest_plugins.utils.pytest_helper import get_test_full_name, get_test_name_without_parameters
+from pytest_plugins.utils.create_report import generate_md_report
 
 execution_results = {}
 test_results = {}
+output_dir = Path('results_output')
+
 logger = logging.getLogger('pytest_plugins.better_report')
 
 
@@ -117,7 +120,6 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
     exec_info.test_list = list(test_results.keys())
 
-    output_dir = Path('results_output')
     output_dir.mkdir(parents=True, exist_ok=True)
 
     save_as_json(path=output_dir / 'execution_results.json', data=execution_results, default=serialize_data)
@@ -196,3 +198,6 @@ def pytest_sessionfinish(session: Session) -> None:
     if exit_status_code != 0:
         failed_tests = [v for v in test_results.values() if v.test_status == ExecutionStatus.FAILED]
         logger.debug(f'Failed tests: {json.dumps(failed_tests, indent=4, default=serialize_data)}')
+
+    res_md = generate_md_report(report=json.loads(json.dumps(test_results, default=serialize_data)))
+    save_as_markdown(path=Path(output_dir/'report.md'), data=res_md)

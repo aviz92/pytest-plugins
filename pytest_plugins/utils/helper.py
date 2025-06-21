@@ -24,3 +24,11 @@ def save_as_json(path: Path, data: dict, default: callable = None) -> None:
     with open(path, 'w', encoding='utf-8') as json_file:
         text = json.dumps(data, indent=4, default=default) if default else json.dumps(data, indent=4)
         json_file.write(text)
+
+
+def save_as_markdown(path: Path, data: str) -> None:
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, 'w', encoding='utf-8') as md_file:
+        md_file.write(data)

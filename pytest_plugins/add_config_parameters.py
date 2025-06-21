@@ -5,7 +5,7 @@ import pytest
 from _pytest.config import Parser, Config
 from _pytest.python import Function
 
-from pytest_plugins.helper import open_json
+from pytest_plugins.utils.helper import open_json
 
 logger = logging.getLogger('pytest_plugins.add_parameters')
 
