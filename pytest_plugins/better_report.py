@@ -55,6 +55,7 @@ def pytest_sessionstart(session: Session) -> None:
 
     execution_results["execution_info"] = ExecutionData(
         execution_status=ExecutionStatus.STARTED,
+        revision=datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f"),
         pull_request_number=session.config.getoption("--pr-number", None),
         merge_request_number=session.config.getoption("--mr-number", None),
         execution_start_time=datetime.now(timezone.utc).isoformat(),
