@@ -4,12 +4,13 @@ def generate_md_report(report: dict) -> str:
         "failed": "❌",
         "failed-skipped": "⚠️",
         "skipped": "⏭️",
+        "collected": "📋"
     }
     rows = [
         "| No. | Test Name | Status | Duration | Message |",
         "|:---:|-----------|:------:|:--------:|---------|"
     ]
-    stats = {"passed": 0, "failed": 0, "failed-skipped": 0, "skipped": 0}
+    stats = {"passed": 0, "failed": 0, "failed-skipped": 0, "skipped": 0, "collected": 0}
     for index, test in enumerate(report.values(), start=1):
         status = test["test_status"]
         stats[status] += 1
