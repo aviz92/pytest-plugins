@@ -13,4 +13,4 @@ def get_test_name_without_parameters(item: Function) -> str:
 def get_test_full_name(item: Function) -> str:
     """Get the full name of the test, including parameters if available."""
     test_name = get_test_name_without_parameters(item=item)
-    return f"{test_name}[{item.callspec.indices}]" if getattr(item, 'callspec', None) else test_name
+    return f"{test_name}[{item.callspec.params}]" if getattr(item, 'callspec', None) else test_name

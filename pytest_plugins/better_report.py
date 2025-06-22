@@ -79,6 +79,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_name=test_name,
             test_full_name=test_full_name,
             test_file_name=item.fspath.basename,
+            test_parameters=item.callspec.params if getattr(item, 'callspec', None) else None,
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=datetime.now(timezone.utc).isoformat(),
@@ -184,6 +185,10 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
             test_item.exception_message = {
                 'exception_type': call.excinfo.typename if call.excinfo else None,
                 'message': exception_message if call.excinfo else None,
+                'traceback': {
+                    'repr_crash': call.excinfo.getrepr().reprcrash if call.excinfo else None,
+                    'traceback': call.excinfo.traceback.__repr__() if call.excinfo else None,
+                }
             }
     else:
         test_item.exception_message = None
