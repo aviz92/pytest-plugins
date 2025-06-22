@@ -187,7 +187,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
                 'message': exception_message if call.excinfo else None,
                 'traceback': {
                     'repr_crash': call.excinfo.getrepr().reprcrash if call.excinfo else None,
-                    'traceback': call.excinfo.traceback.__repr__() if call.excinfo else None,
+                    'traceback': [str(frame.path) for frame in call.excinfo.traceback] if call.excinfo else None,
                 }
             }
     else:
