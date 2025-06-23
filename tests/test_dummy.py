@@ -9,7 +9,10 @@ class TestDummy:
     def test_false(self):
         assert False, {"message": "This test is expected to fail."}
 
-    @pytest.mark.fail2skip
+    @pytest.mark.fail2skip(reason="This test is expected to fail and be skipped.")
+    def test_fail2skip(self):
+        assert False, {"message": "This test is expected to fail."}
+
     @pytest.mark.parametrize("param1, param2", [("A", "A"), (2, 2), (3, 3), (4, 5)])
     def test_with_parameters_1(self, param1, param2):
         assert param1 != param2, "Parameters should not be equal."

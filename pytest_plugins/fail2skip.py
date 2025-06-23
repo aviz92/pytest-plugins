@@ -49,3 +49,10 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
         if get_test_full_name(item=item) in test_results:
             test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.FAILED_SKIPPED
+            test_results[get_test_full_name(item=item)].exception_message.update(
+                {
+                    'fail2skip_reason': [
+                        marker.kwargs.get('reason', None) for marker in item.iter_markers(name='fail2skip')
+                    ][0]
+                }
+            )
