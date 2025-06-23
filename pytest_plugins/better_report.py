@@ -31,6 +31,18 @@ def pytest_addoption(parser: Parser) -> None:
         help="Enable the pytest-better-report plugin",
     )
     parser.addoption(
+        "--traceback",
+        action="store_true",
+        default=False,
+        help="Enable detailed traceback in the report"
+    )
+    parser.addoption(
+        "--md-report",
+        action="store_true",
+        default=False,
+        help="Generate a markdown report of the test results"
+    )
+    parser.addoption(
         "--pr-number",
         action="store",
         default=None,
@@ -112,7 +124,6 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
         logger.error(f"Error computing execution duration: {e}")
         exec_info.execution_duration_sec = None
 
-
     # update execution status
     exec_info.execution_status = (
         ExecutionStatus.PASSED if all(t.test_status == ExecutionStatus.PASSED for t in test_results.values())
@@ -185,11 +196,18 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
             test_item.exception_message = {
                 'exception_type': call.excinfo.typename if call.excinfo else None,
                 'message': exception_message if call.excinfo else None,
-                'traceback': {
-                    'repr_crash': call.excinfo.getrepr().reprcrash if call.excinfo else None,
-                    'traceback': [str(frame.path) for frame in call.excinfo.traceback] if call.excinfo else None,
                 }
-            }
+
+        if item.config.getoption("--traceback"):
+            test_item.exception_message.update(
+                {
+                    'traceback': {
+                        'repr_crash': call.excinfo.getrepr().reprcrash if call.excinfo else None,
+                        'traceback': [str(frame.path) for frame in call.excinfo.traceback] if call.excinfo else None,
+                    }
+                }
+            )
+
     else:
         test_item.exception_message = None
 
@@ -205,4 +223,4 @@ def pytest_sessionfinish(session: Session) -> None:
         logger.debug(f'Failed tests: {json.dumps(failed_tests, indent=4, default=serialize_data)}')
 
     res_md = generate_md_report(report=json.loads(json.dumps(test_results, default=serialize_data)))
-    save_as_markdown(path=Path(output_dir/'test_report.md'), data=res_md)
+    save_as_markdown(path=Path(output_dir / 'test_report.md'), data=res_md)

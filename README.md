@@ -5,10 +5,23 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 ---
 
 ## 🚀 Features
-- ✅ **`better-report`**: Enhanced test result tracking and structured JSON reporting.
-  - generate `execution_results.json`, `test_results.json`, and `test_report`.md under `tests/results_output/` directory.
-- ✅ **`maxfail-streak`**: Stop test execution after a configurable number of consecutive failures.
-- ✅ **`fail2skip`**: Change failing tests to skipped, allowing for better test management and reporting.
+- ✅ **better-report**: Enhanced test result tracking and structured JSON reporting. 
+generate `execution_results.json`, `test_results.json`, and `test_report`.md under `tests/results_output/` directory.
+  - flags:
+    - `--better-report`: Enable the better report feature.
+    - `--traceback`: Include detailed traceback information in the report.
+    - `--md-report`: Generate a Markdown report of the test results.
+    - `--pr-number`: Include a pull request number in the report for better traceability.
+    - `--mr-number`: Include a merge request number in the report for better traceability.
+<br> <br>
+- ✅ **maxfail-streak**: Stop test execution after a configurable number of consecutive failures.
+    - flags:
+      - `--maxfail-streak=N`: Stop test execution after `N` consecutive failures.
+<br> <br>
+- ✅ **fail2skip**: Change failing tests to skipped, allowing for better test management and reporting.
+- flags:
+  - `--fail2skip`: Enable the fail2skip feature.
+    - `@pytest.mark.fail2skip`: Decorator to mark tests that should be skipped on failure.
 
 ---
 
