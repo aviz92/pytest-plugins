@@ -222,5 +222,6 @@ def pytest_sessionfinish(session: Session) -> None:
         failed_tests = [v for v in test_results.values() if v.test_status == ExecutionStatus.FAILED]
         logger.debug(f'Failed tests: {json.dumps(failed_tests, indent=4, default=serialize_data)}')
 
-    res_md = generate_md_report(report=json.loads(json.dumps(test_results, default=serialize_data)))
-    save_as_markdown(path=Path(output_dir / 'test_report.md'), data=res_md)
+    if session.config.getoption("--md-report"):
+        res_md = generate_md_report(report=json.loads(json.dumps(test_results, default=serialize_data)))
+        save_as_markdown(path=Path(output_dir / 'test_report.md'), data=res_md)
