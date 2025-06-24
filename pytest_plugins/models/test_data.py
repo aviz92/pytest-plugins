@@ -10,6 +10,7 @@ class TestData:
     class_test_name: str
     test_name: str
     test_full_name: str
+    test_full_path: str
     test_status: ExecutionStatus = ExecutionStatus.COLLECTED
     test_parameters: Optional[dict] = None
     test_markers: Optional[list] = None
