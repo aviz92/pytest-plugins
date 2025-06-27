@@ -1,5 +1,4 @@
 import pytest
-from python_custom_exceptions import ComparisonException
 
 parametrize = pytest.mark.parametrize("param1, param2", [("A", "A"), (2, 2), (3, 3), (4, 5)])
 
@@ -17,11 +16,11 @@ class TestDummy:
 
     @parametrize
     def test_with_parameters_1(self, param1, param2):
-        assert param1 != param2, ComparisonException(
-            expected_value=param1,
-            actual_value=param2,
-            diagnostic_info={"param1": param1, "param2": param2}
-        )
+        assert param1 != param2, {
+            "expected_value": param1,
+            "actual_value": param2,
+            "diagnostic_info": {"param1": param1, "param2": param2}
+        }
 
     @pytest.mark.parametrize("param1, param2", [(1, 1), (2, 2), (3, 3), (4, 5)])
     def test_with_parameters_2(self, param1, param2):
