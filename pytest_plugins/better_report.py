@@ -54,6 +54,12 @@ def pytest_addoption(parser: Parser) -> None:
         default=None,
         help="Merge Request Number"
     )
+    parser.addoption(
+        "--add-parameters",
+        action="store",
+        default=None,
+        help="Add the test parameters as fields to the test results"
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -97,6 +103,8 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=datetime.now(timezone.utc).isoformat(),
         )
+        if getattr(item, 'callspec', None) and config.getoption('--add-parameters'):
+            test_results[test_full_name].__dict__.update(**item.callspec.params)
     logger.debug(f'Tests to be executed: \n{json.dumps(list(test_results.keys()), indent=4, default=serialize_data)}')
     time.sleep(0.3)  # Sleep to ensure the debug log is printed before the tests start
 

@@ -13,6 +13,7 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
     - `--md-report`: Generate a Markdown report of the test results.
     - `--pr-number`: Include a pull request number in the report for better traceability.
     - `--mr-number`: Include a merge request number in the report for better traceability.
+    - `--add-parameters`: Add the test parameters as fields to the test results.
 <br> <br>
 - ✅ **maxfail-streak**: Stop test execution after a configurable number of consecutive failures.
     - flags:
