@@ -58,9 +58,15 @@ def pytest_addoption(parser: Parser) -> None:
     )
     parser.addoption(
         "--add-parameters",
-        action="store",
+        action="store_true",
         default=None,
-        help="Add the test parameters as fields to the test results"
+        help='Add the test parameters as fields to the "test_results.json" file'
+    )
+    parser.addoption(
+        "--pytest-command",
+        action="store_true",
+        default=None,
+        help='Add the detailed information about the pytest command-line to the "execution_results.json" file'
     )
 
 
@@ -76,10 +82,12 @@ def pytest_sessionstart(session: Session) -> None:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
 
+    import sys
     execution_results["environment_info"] = EnvironmentData(
         python_version=platform.python_version(),
         platform=platform.platform(),
     )
+
     execution_results["execution_info"] = ExecutionData(
         execution_status=ExecutionStatus.STARTED,
         revision=datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f"),
@@ -87,6 +95,14 @@ def pytest_sessionstart(session: Session) -> None:
         merge_request_number=session.config.getoption("--mr-number", None),
         execution_start_time=datetime.now(timezone.utc).isoformat(),
     )
+
+    if session.config.getoption("--pytest-command"):
+        execution_results["pytest_command"] = {
+            "real_cli": sys.argv,
+            "ini_addopts": session.config.getini("addopts"),
+            "raw_args": session.config.invocation_params.args,
+        }
+
     logger.debug("Better report: Test session started")
 
 
@@ -226,6 +242,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
     else:
         test_item.exception_message = None
+
 
 def pytest_sessionfinish(session: Session) -> None:
     if not getattr(session.config, '_better_report_enabled', None):
