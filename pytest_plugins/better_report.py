@@ -245,7 +245,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
 
 def pytest_sessionfinish(session: Session) -> None:
-    if not getattr(session.config, '_better_report_enabled', None):
+    if session.config.getoption("--collect-only") or not getattr(session.config, '_better_report_enabled', None):
         return
 
     exit_status_code = session.session.exitstatus
