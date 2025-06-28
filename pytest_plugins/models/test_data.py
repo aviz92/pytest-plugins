@@ -17,6 +17,5 @@ class TestData:
     test_start_time: Optional[str] = None
     test_end_time: Optional[str] = None
     test_duration_sec: Optional[float] = None
-    test_stage_fail: Optional[str] = None
     exception_message: Optional[str] = None
     run_index: Optional[int] = None
