@@ -1,5 +1,6 @@
 import json
 import logging
+import platform
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,6 +12,7 @@ from _pytest.fixtures import FixtureRequest
 from _pytest.main import Session
 from _pytest.python import Function
 
+from pytest_plugins.models.environment_data import EnvironmentData
 from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
 from pytest_plugins.utils.pytest_helper import get_test_full_name, get_test_name_without_parameters, get_test_full_path
@@ -74,6 +76,10 @@ def pytest_sessionstart(session: Session) -> None:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
 
+    execution_results["environment_info"] = EnvironmentData(
+        python_version=platform.python_version(),
+        platform=platform.platform(),
+    )
     execution_results["execution_info"] = ExecutionData(
         execution_status=ExecutionStatus.STARTED,
         revision=datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f"),
@@ -102,6 +108,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=datetime.now(timezone.utc).isoformat(),
+            run_index=len(test_results) + 1
         )
         if getattr(item, 'callspec', None) and config.getoption('--add-parameters'):
             test_results[test_full_name].__dict__.update(**item.callspec.params)
