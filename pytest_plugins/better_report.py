@@ -206,8 +206,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
 
     if call.excinfo:
-        test_item.test_stage_fail = report.when
-
         exception_message = str(call.excinfo.value).split('\nassert')[0]
         try:
             test_item.exception_message = json.loads(exception_message)
@@ -229,7 +227,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
     else:
         test_item.exception_message = None
-
 
 def pytest_sessionfinish(session: Session) -> None:
     if not getattr(session.config, '_better_report_enabled', None):
