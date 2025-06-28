@@ -7,6 +7,7 @@ class TestDummy:
     def test_pass(self):
         assert True
 
+    @pytest.mark.test_fail
     def test_false(self):
         assert False, {"message": "This test is expected to fail."}
 
