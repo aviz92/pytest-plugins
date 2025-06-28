@@ -1,6 +1,7 @@
 import json
 import logging
 import platform
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -203,6 +204,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         return
 
     test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
+    test_item.test_stage_fail = report.when
 
     if call.excinfo:
         exception_message = str(call.excinfo.value).split('\nassert')[0]
@@ -212,7 +214,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
             test_item.exception_message = {
                 'exception_type': call.excinfo.typename if call.excinfo else None,
                 'message': exception_message if call.excinfo else None,
-                }
+            }
 
         if item.config.getoption("--traceback"):
             test_item.exception_message.update(
