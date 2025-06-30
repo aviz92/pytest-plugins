@@ -4,4 +4,4 @@ dotenv
 colorlog
 pytest
 pytest-rerunfailures
-custom_python_logger
+custom-python-logger
