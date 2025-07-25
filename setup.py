@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-package_version = '0.2.0'
+package_version = '0.3.0'
 
 package_name = 'pytest-plugins'
 package_description = 'A Python package for managing pytest plugins.'
@@ -39,6 +39,7 @@ setup(
             "max_fail_streak = pytest_plugins.max_fail_streak",
             "fail2skip = pytest_plugins.fail2skip",
             "add_config_parameters = pytest_plugins.add_config_parameters",
+            "verbose_param_ids = pytest_plugins.verbose_param_ids",
         ]
     },
     classifiers=[
