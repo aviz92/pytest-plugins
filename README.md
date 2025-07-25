@@ -15,6 +15,7 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
     - `--mr-number`: Include a merge request number in the report for better traceability.
     - `--add-parameters`: Add the test parameters as fields to the test results.
     - `--pytest-command`: Add the detailed information about the pytest command-line to the "execution_results.json" file
+    - `--verbose-param-ids`: Include parameter names in pytest test IDs (e.g., `test_name[param1: value1, param2: value2]` instead of `test_name[param1-param2])`
 <br> <br>
 - ✅ **maxfail-streak**: Stop test execution after a configurable number of consecutive failures.
     - flags:

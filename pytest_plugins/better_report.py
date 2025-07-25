@@ -73,6 +73,12 @@ def pytest_addoption(parser: Parser) -> None:
         default=None,
         help='Add the detailed information about the pytest command-line to the "execution_results.json" file'
     )
+    parser.addoption(
+        "--verbose-param-ids",
+        action="store_true",
+        default=None,
+        help="Include parameter names in pytest test IDs (e.g., test_name[param1=value1,param2=value2] instead of test_name[param1,value1,param2,value2])"
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -134,6 +140,8 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
         )
         if getattr(item, 'callspec', None) and config.getoption('--add-parameters'):
             test_results[test_full_name].__dict__.update(**item.callspec.params)
+        if config.getoption('--verbose-param-ids'):
+            item._nodeid = f"{item.fspath.basename}::{test_full_name}"
     logger.debug(f'Tests to be executed: \n{json.dumps(list(test_results.keys()), indent=4, default=serialize_data)}')
     time.sleep(0.3)  # Sleep to ensure the debug log is printed before the tests start
 
