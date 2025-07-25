@@ -28,4 +28,5 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
 
     for item in items:
         test_full_name = get_test_full_name(item=item)
+        test_full_name = test_full_name.replace('{', '').replace('}', '')
         item._nodeid = f"{item.fspath.basename}::{test_full_name}"

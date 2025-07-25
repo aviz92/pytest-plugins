@@ -27,7 +27,7 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
 <br> <br>
 - ✅ **verbose-param-ids**: Enhance test IDs with parameter names for better clarity in pytest reports.
 - flags:
-    - `--verbose-param-ids`: Include parameter names in pytest test IDs (e.g., `test_name[param1: value1, param2: value2]` instead of `test_name[param1-param2])`
+    - `--verbose-param-ids`: Include parameter names in pytest test IDs (e.g., `(param1: value1, param2: value2)` instead of `(param1-param2))`
 
 ---
 
