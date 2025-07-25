@@ -39,20 +39,20 @@ pip install pytest-plugins
 ---
 
 ### 🔧 Usage
-- pytest-better-report
-  - pytest --better-report
-  - pytest --better-report --pr-number=123
-- pytest-maxfail-streak
-  - pytest --maxfail-streak=3
-    - for using without a streak, use the built-in `--maxfail` option
-- pytest-fail2skip
-  - pytest --fail2skip # must add `@pytest.mark.fail2skip` decorator to the test function
-
-or use the `pytest.ini` configuration file to set default values for these plugins.
-
+##### Add the following to your `pytest.ini` file to enable the plugin features:
 ```ini
 [pytest]
-addopts = --better-report --pr-number=123 --maxfail-streak=3 --fail2skip
+addopts =
+    --better-report
+    --pr-number=123
+;    --mr-number=123
+    --fail2skip
+    --maxfail-streak=3
+    --add-parameters
+    --pytest-command
+    --verbose-param-ids
+    --md-report
+    --traceback
 ```
 
 ---
