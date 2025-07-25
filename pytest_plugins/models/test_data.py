@@ -9,6 +9,7 @@ class TestData:
     test_file_name: str
     class_test_name: str
     test_name: str
+    pytest_test_name: str
     test_full_name: str
     test_full_path: str
     test_status: ExecutionStatus = ExecutionStatus.COLLECTED

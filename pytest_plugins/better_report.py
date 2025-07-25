@@ -15,7 +15,12 @@ from _pytest.python import Function
 from pytest_plugins.models.environment_data import EnvironmentData
 from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
-from pytest_plugins.utils.pytest_helper import get_test_full_name, get_test_name_without_parameters, get_test_full_path
+from pytest_plugins.utils.pytest_helper import (
+    get_test_full_name,
+    get_test_name_without_parameters,
+    get_test_full_path,
+    get_pytest_test_name
+)
 from pytest_plugins.utils.create_report import generate_md_report
 
 execution_results = {}
@@ -117,6 +122,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
         test_results[test_full_name] = TestData(
             class_test_name=item.cls.__name__ if item.cls else None,
             test_name=test_name,
+            pytest_test_name=get_pytest_test_name(item=item),
             test_full_name=test_full_name,
             test_full_path=get_test_full_path(item=item),
             test_file_name=item.fspath.basename,
