@@ -1,3 +1,4 @@
+import sys
 import json
 import logging
 from collections import Counter
@@ -43,13 +44,11 @@ def summarize_tests(json_path: str, output_md_path: Path = Path("reports/test_su
 
 
 def main():
-    import sys
-
     commit_hash = sys.argv[1] if len(sys.argv) > 1 else None
     logger.info(f"Commit hash: {commit_hash}")
 
     summarize_tests(
-        json_path="../tests/results_output/test_results.json",
+        json_path="../results_output/test_results.json",
         output_md_path=Path("reports/test_summary.md"),
         commit_hash=commit_hash
     )

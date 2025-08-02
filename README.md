@@ -9,6 +9,7 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 generate `execution_results.json`, `test_results.json`, and `test_report`.md under `tests/results_output/` directory.
   - flags:
     - `--better-report`: Enable the better report feature.
+    - `--output-dir`: Specify the output directory for the report files (default is `root_project/results_output/`).
     - `--traceback`: Include detailed traceback information in the report.
     - `--md-report`: Generate a Markdown report of the test results.
     - `--pr-number`: Include a pull request number in the report for better traceability.
@@ -44,6 +45,7 @@ pip install pytest-plugins
 [pytest]
 addopts =
     --better-report
+    --output-dir=logs
     --pr-number=123
 ;    --mr-number=123
     --fail2skip

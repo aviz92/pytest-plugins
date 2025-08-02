@@ -4,6 +4,14 @@ from enum import Enum, StrEnum
 from pathlib import Path
 
 
+def get_project_root(marker: str = ".git") -> Path | None:
+    path = Path(__file__).resolve()
+    for parent in path.parents:
+        if (parent / marker).exists():
+            return parent
+    return None
+
+
 def serialize_data(obj):
     if isinstance(obj, (Enum, StrEnum)):
         return obj.value
