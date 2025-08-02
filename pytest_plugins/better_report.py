@@ -14,7 +14,7 @@ from _pytest.main import Session
 from _pytest.python import Function
 
 from pytest_plugins.models.environment_data import EnvironmentData
-from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown
+from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown, get_project_root
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
 from pytest_plugins.utils.pytest_helper import (
     get_test_full_name,
@@ -26,7 +26,6 @@ from pytest_plugins.utils.create_report import generate_md_report
 
 execution_results = {}
 test_results = {}
-output_dir = Path('results_output')
 
 logger = logging.getLogger('pytest_plugins.better_report')
 
@@ -37,6 +36,13 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         default=False,
         help="Enable the pytest-better-report plugin",
+    )
+    parser.addoption(
+        "--output-dir",
+        type=Path,
+        action="store",
+        default=None,
+        help="Directory to save the results and reports",
     )
     parser.addoption(
         "--traceback",
@@ -81,6 +87,12 @@ def pytest_configure(config: Config) -> None:
         return
 
     config._better_report_enabled = config.getoption("--better-report")
+
+    output_dir = Path('results_output')
+    if _output_dir := config.getoption("--output-dir"):
+        config.option.output_dir = get_project_root() / _output_dir / output_dir if get_project_root() else output_dir
+    else:
+        config.option.output_dir = get_project_root() / Path('results_output') if get_project_root() else output_dir
 
 
 def pytest_sessionstart(session: Session) -> None:
@@ -170,6 +182,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
     exec_info.test_list = list(test_results.keys())
 
+    output_dir = request.config.option.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
     save_as_json(path=output_dir / 'execution_results.json', data=execution_results, default=serialize_data)
@@ -178,7 +191,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
 
 @pytest.fixture(autouse=True)
-def save_test_results(request: FixtureRequest) -> None:
+def log_test_results(request: FixtureRequest) -> None:
     if not getattr(request.config, '_better_report_enabled', None):
         return
 
@@ -261,5 +274,6 @@ def pytest_sessionfinish(session: Session) -> None:
         logger.debug(f'Failed tests: {json.dumps(failed_tests, indent=4, default=serialize_data)}')
 
     if session.config.getoption("--md-report"):
+        output_dir = session.config.option.output_dir
         res_md = generate_md_report(report=json.loads(json.dumps(test_results, default=serialize_data)))
         save_as_markdown(path=Path(output_dir / 'test_report.md'), data=res_md)

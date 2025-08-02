@@ -17,6 +17,11 @@ def summarize_tests(json_path: str):
         exit(1)
 
 
+def main():
+    summarize_tests(json_path="../results_output/test_results.json")
+
+
 if __name__ == "__main__":
     logger = get_logger(project_name='Automation-Tests-Check-Status', log_level=logging.DEBUG)
-    summarize_tests(json_path="../tests/results_output/test_results.json")
+
+    main()
