@@ -31,6 +31,8 @@ def serialize_data(obj: object) -> object:  # default_serialize
         return obj.isoformat()
     if isinstance(obj, Decimal):
         return float(obj)
+    if isinstance(obj, Path):
+        return str(obj)
     logger.error(f'Object is not serializable: {obj}')
     raise TypeError(f"Type {type(obj)} not serializable")
 
