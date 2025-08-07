@@ -16,7 +16,7 @@ def get_project_root(marker: str = ".git") -> Path | None:
     return None
 
 
-def default_serialize(obj: object) -> object:
+def serialize_data(obj: object) -> object:  # default_serialize
     if isinstance(obj, type):
         return obj.__name__
     if is_dataclass(obj) and not isinstance(obj, type):
