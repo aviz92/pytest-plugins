@@ -162,7 +162,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_parameters=item.callspec.params if getattr(item, 'callspec', None) else None,
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
-            test_start_time=datetime.now(timezone.utc).isoformat(),
+            test_start_time=None,
             run_index=len(test_results) + 1
         )
         if getattr(item, 'callspec', None) and config.getoption('--add-parameters'):
@@ -213,6 +213,10 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
+    if call.when == "setup":
+        test_full_name = get_test_full_name(item=item)
+        test_results[test_full_name].test_start_time = datetime.now(timezone.utc).isoformat()
+
     outcome = yield
     report = outcome.get_result()
 
