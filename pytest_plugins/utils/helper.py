@@ -19,6 +19,8 @@ def serialize_data(obj):
         return obj.value
     if is_dataclass(obj):
         return obj.__dict__
+    if isinstance(obj, type):
+        return obj.__name__
     logger.error(f'Object is not serializable: {obj}')
     raise TypeError(f"Type {type(obj)} not serializable")
 
