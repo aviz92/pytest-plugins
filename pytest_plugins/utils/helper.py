@@ -1,8 +1,10 @@
 import json
+import logging
 from dataclasses import is_dataclass
 from enum import Enum, StrEnum
 from pathlib import Path
 
+logger = logging.getLogger('pytest_plugins.utils')
 
 def get_project_root(marker: str = ".git") -> Path | None:
     path = Path(__file__).resolve()
@@ -17,6 +19,7 @@ def serialize_data(obj):
         return obj.value
     if is_dataclass(obj):
         return obj.__dict__
+    logger.error(f'Object is not serializable: {obj}')
     raise TypeError(f"Type {type(obj)} not serializable")
 
 
