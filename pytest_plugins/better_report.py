@@ -211,26 +211,6 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
     logger.info("Better report: Execution results saved")
 
 
-def pytest_runtest_teardown(item: Function) -> None:
-    if not getattr(item.config, '_better_report_enabled', None):
-        return
-
-    test_full_name = get_test_full_name(item=item)
-    test_item = test_results[test_full_name]
-    if not test_item:
-        logger.warning(f"Test {test_full_name} missing in test_results during teardown")
-        return
-
-    test_item.test_end_time = datetime.now(timezone.utc).isoformat()
-    if test_item.test_start_time:  # Add test duration only if start time is set
-        try:
-            start_obj = datetime.fromisoformat(test_item.test_start_time)
-            end_obj = datetime.fromisoformat(test_item.test_end_time)
-            test_item.test_duration_sec = (end_obj - start_obj).total_seconds()
-        except Exception as e:
-            logger.error(f"Error computing test duration for {test_full_name}: {e}")
-
-
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
     outcome = yield
@@ -269,6 +249,26 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
     else:
         test_item.exception_message = None
+
+
+def pytest_runtest_teardown(item: Function) -> None:
+    if not getattr(item.config, '_better_report_enabled', None):
+        return
+
+    test_full_name = get_test_full_name(item=item)
+    test_item = test_results[test_full_name]
+    if not test_item:
+        logger.warning(f"Test {test_full_name} missing in test_results during teardown")
+        return
+
+    test_item.test_end_time = datetime.now(timezone.utc).isoformat()
+    if test_item.test_start_time:  # Add test duration only if start time is set
+        try:
+            start_obj = datetime.fromisoformat(test_item.test_start_time)
+            end_obj = datetime.fromisoformat(test_item.test_end_time)
+            test_item.test_duration_sec = (end_obj - start_obj).total_seconds()
+        except Exception as e:
+            logger.error(f"Error computing test duration for {test_full_name}: {e}")
 
     log_test_results(item=item, test_results=test_results)
 
