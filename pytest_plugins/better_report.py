@@ -20,7 +20,7 @@ from pytest_plugins.utils.pytest_helper import (
     get_test_full_name,
     get_test_name_without_parameters,
     get_test_full_path,
-    get_pytest_test_name
+    get_pytest_test_name, log_test_results
 )
 from pytest_plugins.utils.create_report import generate_md_report
 
@@ -57,6 +57,12 @@ def pytest_addoption(parser: Parser) -> None:
         help="Generate a markdown report of the test results"
     )
     parser.addoption(
+        "--repo-name",
+        action="store",
+        default=None,
+        help="Git Repository Name"
+    )
+    parser.addoption(
         "--pr-number",
         action="store",
         default=None,
@@ -67,6 +73,18 @@ def pytest_addoption(parser: Parser) -> None:
         action="store",
         default=None,
         help="Merge Request Number"
+    )
+    parser.addoption(
+        "--pipeline-number",
+        action="store",
+        default=None,
+        help="CI Pipeline Number"
+    )
+    parser.addoption(
+        "--commit",
+        action="store",
+        default=None,
+        help="Commit Hash (SHA-1) of the repository at the time of test execution"
     )
     parser.addoption(
         "--add-parameters",
@@ -108,9 +126,12 @@ def pytest_sessionstart(session: Session) -> None:
     execution_results["execution_info"] = ExecutionData(
         execution_status=ExecutionStatus.STARTED,
         revision=datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S%f"),
+        execution_start_time=datetime.now(timezone.utc).isoformat(),
+        repo_name=session.config.getoption("--repo-name", None),
         pull_request_number=session.config.getoption("--pr-number", None),
         merge_request_number=session.config.getoption("--mr-number", None),
-        execution_start_time=datetime.now(timezone.utc).isoformat(),
+        pipeline_number=session.config.getoption("--pipeline-number", None),
+        commit=session.config.getoption("--commit", None),
     )
 
     if session.config.getoption("--pytest-command"):
@@ -190,19 +211,6 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
     logger.info("Better report: Execution results saved")
 
 
-@pytest.fixture(autouse=True)
-def log_test_results(request: FixtureRequest) -> None:
-    if not getattr(request.config, '_better_report_enabled', None):
-        return
-
-    test_item = request.node
-    test_full_name = get_test_full_name(item=test_item)
-    if test_full_name in test_results:
-        logger.debug(f'Test Results: \n{json.dumps(test_results[test_full_name], indent=4, default=serialize_data)}')
-    else:
-        logger.warning(f"Test {test_full_name} missing in test_results during report")
-
-
 def pytest_runtest_teardown(item: Function) -> None:
     if not getattr(item.config, '_better_report_enabled', None):
         return
@@ -261,6 +269,8 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
     else:
         test_item.exception_message = None
+
+    log_test_results(item=item, test_results=test_results)
 
 
 def pytest_sessionfinish(session: Session) -> None:

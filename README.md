@@ -12,8 +12,11 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
     - `--output-dir`: Specify the output directory for the report files (default is `root_project/results_output/`).
     - `--traceback`: Include detailed traceback information in the report.
     - `--md-report`: Generate a Markdown report of the test results.
+    - `repo-name`: Specify the git repository name for the report.
     - `--pr-number`: Include a pull request number in the report for better traceability.
     - `--mr-number`: Include a merge request number in the report for better traceability.
+    - `--pipeline-number`: Include a CI pipeline number in the report for better traceability.
+    - `--commit`: Include the commit hash in the report for better traceability.
     - `--add-parameters`: Add the test parameters as fields to the test results.
     - `--pytest-command`: Add the detailed information about the pytest command-line to the "execution_results.json" file
 <br> <br>
