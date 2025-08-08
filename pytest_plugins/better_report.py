@@ -197,8 +197,9 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
     # update execution status
     exec_info.execution_status = (
-        ExecutionStatus.PASSED if all(t.test_status == ExecutionStatus.PASSED for t in test_results.values())
-        else ExecutionStatus.FAILED
+        ExecutionStatus.PASSED if all(
+            t.test_status in [ExecutionStatus.PASSED, ExecutionStatus.SKIPPED] for t in test_results.values()
+        ) else ExecutionStatus.FAILED
     )
 
     exec_info.test_list = list(test_results.keys())
@@ -213,9 +214,15 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
+    test_full_name = get_test_full_name(item=item)
+    test_item = test_results.get(test_full_name)
+
     if call.when == "setup":
         test_full_name = get_test_full_name(item=item)
         test_results[test_full_name].test_start_time = datetime.now(timezone.utc).isoformat()
+
+    if call.excinfo and call.excinfo.typename == ExecutionStatus.SKIPPED.value.title():
+        test_item.test_status = ExecutionStatus.SKIPPED
 
     outcome = yield
     report = outcome.get_result()
@@ -223,8 +230,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     if report.when != "call" or not getattr(item.config, '_better_report_enabled', None):
         return
 
-    test_full_name = get_test_full_name(item=item)
-    test_item = test_results.get(test_full_name)
     if not test_item:
         logger.warning(f"Test {test_full_name} missing in test_results during makereport")
         return
