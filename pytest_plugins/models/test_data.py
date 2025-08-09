@@ -17,6 +17,6 @@ class TestData:
     test_markers: Optional[list] = None
     test_start_time: Optional[str] = None
     test_end_time: Optional[str] = None
-    test_duration_sec: Optional[float] = None
+    test_duration_sec: Optional[float] = None  # only for the tst itself, not including fixtures
     exception_message: Optional[str] = None
     run_index: Optional[int] = None
