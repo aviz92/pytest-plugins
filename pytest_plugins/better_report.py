@@ -216,6 +216,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
     if not getattr(item.config, '_better_report_enabled', None):
         logger.debug("Better report plugin is not enabled, skipping session start processing")
+        yield
         return
 
     test_full_name = get_test_full_name(item=item)
