@@ -152,6 +152,12 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
     for item in items:
         test_name = get_test_name_without_parameters(item=item)
         test_full_name = get_test_full_name(item=item)
+
+        params = json.loads(
+                json.dumps(item.callspec.params, default=serialize_data)
+            ) if getattr(item, 'callspec', None) else None
+        params_str = {k: str(v) for k, v in params.items()} if params else None
+
         test_results[test_full_name] = TestData(
             class_test_name=item.cls.__name__ if item.cls else None,
             test_name=test_name,
@@ -159,9 +165,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_full_name=test_full_name,
             test_full_path=get_test_full_path(item=item),
             test_file_name=item.fspath.basename,
-            test_parameters=json.loads(
-                json.dumps(item.callspec.params, default=serialize_data)
-            ) if getattr(item, 'callspec', None) else None,
+            test_parameters=params_str,
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=None,
