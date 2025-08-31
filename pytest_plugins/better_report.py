@@ -159,7 +159,9 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
             test_full_name=test_full_name,
             test_full_path=get_test_full_path(item=item),
             test_file_name=item.fspath.basename,
-            test_parameters=item.callspec.params if getattr(item, 'callspec', None) else None,
+            test_parameters=json.loads(
+                json.dumps(item.callspec.params, default=serialize_data)
+            ) if getattr(item, 'callspec', None) else None,
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=None,
