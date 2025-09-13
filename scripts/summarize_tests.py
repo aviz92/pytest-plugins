@@ -4,7 +4,7 @@ import logging
 from collections import Counter
 from pathlib import Path
 
-from custom_python_logger import get_logger
+from custom_python_logger import build_logger
 
 
 def summarize_tests(json_path: str, output_md_path: Path = Path("reports/test_summary.md"), commit_hash: str = None):
@@ -55,6 +55,6 @@ def main():
 
 
 if __name__ == "__main__":
-    logger = get_logger(project_name='Automation-Tests-Summary', log_level=logging.DEBUG)
+    logger = build_logger(project_name='Automation-Tests-Summary', log_level=logging.DEBUG)
 
     main()

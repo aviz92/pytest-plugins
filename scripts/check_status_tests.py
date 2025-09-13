@@ -2,7 +2,7 @@ import json
 import logging
 from collections import Counter
 
-from custom_python_logger import get_logger
+from custom_python_logger import build_logger
 
 
 def summarize_tests(json_path: str):
@@ -22,6 +22,6 @@ def main():
 
 
 if __name__ == "__main__":
-    logger = get_logger(project_name='Automation-Tests-Check-Status', log_level=logging.DEBUG)
+    logger = build_logger(project_name='Automation-Tests-Check-Status', log_level=logging.DEBUG)
 
     main()
