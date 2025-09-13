@@ -1,15 +1,15 @@
-import logging
 from typing import Any, Generator
 
 import pytest
 from _pytest.config import Config, Parser
 from _pytest.python import Function
+from custom_python_logger import get_logger
 
 from pytest_plugins.better_report import test_results
 from pytest_plugins.models import ExecutionStatus
 from pytest_plugins.utils.pytest_helper import get_test_full_name
 
-logger = logging.getLogger("pytest_plugins.fail2skip")
+logger = get_logger("pytest_plugins.fail2skip")
 
 
 def pytest_addoption(parser: Parser) -> None:

@@ -1,5 +1,4 @@
 import json
-import logging
 import platform
 import sys
 import time
@@ -12,6 +11,7 @@ from _pytest.config import Config, Parser
 from _pytest.fixtures import FixtureRequest
 from _pytest.main import Session
 from _pytest.python import Function
+from custom_python_logger import get_logger
 
 from pytest_plugins.models.environment_data import EnvironmentData
 from pytest_plugins.utils.helper import save_as_json, serialize_data, save_as_markdown, get_project_root
@@ -27,7 +27,7 @@ from pytest_plugins.utils.create_report import generate_md_report
 execution_results = {}
 test_results = {}
 
-logger = logging.getLogger('pytest_plugins.better_report')
+logger = get_logger('pytest_plugins.better_report')
 
 
 def pytest_addoption(parser: Parser) -> None:

@@ -1,13 +1,13 @@
-import logging
 from pathlib import Path
 
 import pytest
 from _pytest.config import Parser, Config
 from _pytest.python import Function
+from custom_python_logger import get_logger
 
 from pytest_plugins.utils.helper import open_json
 
-logger = logging.getLogger('pytest_plugins.add_parameters')
+logger = get_logger('pytest_plugins.add_parameters')
 
 
 def pytest_addoption(parser: Parser) -> None:

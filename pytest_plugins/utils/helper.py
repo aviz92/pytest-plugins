@@ -1,12 +1,13 @@
 import json
-import logging
 from dataclasses import is_dataclass
 from datetime import datetime, date, time
 from decimal import Decimal
-from enum import Enum, StrEnum
+from enum import Enum
 from pathlib import Path
 
-logger = logging.getLogger('pytest_plugins.utils')
+from custom_python_logger import get_logger
+
+logger = get_logger('pytest_plugins.utils')
 
 def get_project_root(marker: str = ".git") -> Path | None:
     path = Path(__file__).resolve()

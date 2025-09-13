@@ -2,10 +2,11 @@ import json
 import logging
 
 from _pytest.python import Function
+from custom_python_logger import get_logger
 
 from pytest_plugins.utils.helper import serialize_data
 
-logger = logging.getLogger()
+logger = get_logger(__name__)
 
 
 def get_test_path_without_parameters(item: Function) -> str:

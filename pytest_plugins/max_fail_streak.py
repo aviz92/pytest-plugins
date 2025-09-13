@@ -1,13 +1,13 @@
-import logging
 import pytest
 from _pytest.config import Config, Parser
 from _pytest.python import Function
+from custom_python_logger import get_logger
 
 from pytest_plugins.better_report import test_results
 from pytest_plugins.models import ExecutionStatus
 from pytest_plugins.utils.pytest_helper import get_test_full_name
 
-logger = logging.getLogger('pytest_plugins.max_fail_streak')
+logger = get_logger('pytest_plugins.max_fail_streak')
 global_interface = {}
 
 
