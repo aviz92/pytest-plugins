@@ -5,3 +5,4 @@ colorlog
 pytest
 pytest-rerunfailures
 custom-python-logger
+pandas

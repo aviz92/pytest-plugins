@@ -5,6 +5,7 @@ from decimal import Decimal
 from enum import Enum
 from pathlib import Path
 
+import pandas as pd
 from custom_python_logger import get_logger
 
 logger = get_logger('pytest_plugins.utils')
@@ -34,6 +35,8 @@ def serialize_data(obj: object) -> object:  # default_serialize
         return float(obj)
     if isinstance(obj, Path):
         return str(obj)
+    if obj is pd.NA:
+        return None
     logger.error(f'Object is not serializable: {obj}')
     raise TypeError(f"Type {type(obj)} not serializable")
 

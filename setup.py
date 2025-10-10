@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-package_version = '1.0.2'
+package_version = '1.0.3'
 
 package_name = 'pytest-plugins'
 package_description = 'A Python package for managing pytest plugins.'
