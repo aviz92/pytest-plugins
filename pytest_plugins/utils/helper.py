@@ -4,6 +4,7 @@ from datetime import datetime, date, time
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
+from typing import Optional, Callable
 
 import pandas as pd
 from custom_python_logger import get_logger
@@ -47,7 +48,7 @@ def open_json(path: Path) -> dict:
         return json.load(json_file)
 
 
-def save_as_json(path: Path, data: dict, default: callable = None) -> None:
+def save_as_json(path: Path, data: dict, default: Optional[Callable] = None) -> None:
     if not path.parent.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
 
