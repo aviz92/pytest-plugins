@@ -10,6 +10,7 @@ from custom_python_logger import get_logger
 
 logger = get_logger('pytest_plugins.utils')
 
+
 def get_project_root(marker: str = ".git") -> Path | None:
     path = Path(__file__).resolve()
     for parent in path.parents:
@@ -40,6 +41,7 @@ def serialize_data(obj: object) -> object:  # default_serialize
     logger.error(f'Object is not serializable: {obj}')
     raise TypeError(f"Type {type(obj)} not serializable")
 
+
 def open_json(path: Path) -> dict:
     with open(path, 'r', encoding='utf-8') as json_file:
         return json.load(json_file)
@@ -60,3 +62,10 @@ def save_as_markdown(path: Path, data: str) -> None:
 
     with open(path, 'w', encoding='utf-8') as md_file:
         md_file.write(data)
+
+
+def extended_serialize_data(obj):
+    if isinstance(obj, complex):
+        return {"real": obj.real, "imag": obj.imag}
+
+    return serialize_data(obj)
