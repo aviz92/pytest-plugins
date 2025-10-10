@@ -62,10 +62,3 @@ def save_as_markdown(path: Path, data: str) -> None:
 
     with open(path, 'w', encoding='utf-8') as md_file:
         md_file.write(data)
-
-
-def extended_serialize_data(obj):
-    if isinstance(obj, complex):
-        return {"real": obj.real, "imag": obj.imag}
-
-    return serialize_data(obj)
