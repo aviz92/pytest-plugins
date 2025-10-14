@@ -1,4 +1,5 @@
-from typing import Any, Generator
+from collections.abc import Generator
+from typing import Any
 
 import pytest
 from _pytest.config import Config, Parser
@@ -25,11 +26,8 @@ def pytest_configure(config: Config) -> None:
     if not config.getoption("--fail2skip"):
         return
 
-    config._fail2skip_enabled = config.getoption("--fail2skip")
-    config.addinivalue_line(
-        name="markers",
-        line="fail2skip: convert failed test to skip instead of fail"
-    )
+    config._fail2skip_enabled = config.getoption("--fail2skip")  # pylint: disable=W0212
+    config.addinivalue_line(name="markers", line="fail2skip: convert failed test to skip instead of fail")
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -38,7 +36,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     report = outcome.get_result()
 
     if (
-        getattr(item.config, '_fail2skip_enabled', None)
+        getattr(item.config, "_fail2skip_enabled", None)
         and item.get_closest_marker("fail2skip")
         and call.when == "call"
         and report.outcome == "failed"
@@ -51,8 +49,8 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
             test_results[get_test_full_name(item=item)].test_status = ExecutionStatus.FAILED_SKIPPED
             test_results[get_test_full_name(item=item)].exception_message.update(
                 {
-                    'fail2skip_reason': [
-                        marker.kwargs.get('reason', None) for marker in item.iter_markers(name='fail2skip')
+                    "fail2skip_reason": [
+                        marker.kwargs.get("reason", None) for marker in item.iter_markers(name="fail2skip")
                     ][0]
                 }
             )

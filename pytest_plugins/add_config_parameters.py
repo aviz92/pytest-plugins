@@ -1,13 +1,13 @@
 from pathlib import Path
 
 import pytest
-from _pytest.config import Parser, Config
+from _pytest.config import Config, Parser
 from _pytest.python import Function
 from custom_python_logger import get_logger
 
 from pytest_plugins.utils.helper import open_json
 
-logger = get_logger('pytest_plugins.add_parameters')
+logger = get_logger("pytest_plugins.add_parameters")
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -28,5 +28,5 @@ def pytest_configure(config: Config) -> None:
 
 @pytest.fixture(scope="class", autouse=True)
 def add_param_to_class(request: Function) -> None:
-    if getattr(request.config, '_config', None) and getattr(request, 'cls', None):
+    if getattr(request.config, "_config", None) and getattr(request, "cls", None):
         request.cls.config = open_json(Path(request.config.config_path))

@@ -5,7 +5,7 @@ It includes improved `conftest.py` fixtures, automated test result reporting, de
 ---
 
 ## 🚀 Features
-- ✅ **better-report**: Enhanced test result tracking and structured JSON reporting. 
+- ✅ **better-report**: Enhanced test result tracking and structured JSON reporting.
 generate `execution_results.json`, `test_results.json`, and `test_report`.md under `tests/results_output/` directory.
   - flags:
     - `--better-report`: Enable the better report feature.

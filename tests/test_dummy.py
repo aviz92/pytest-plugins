@@ -1,8 +1,6 @@
 import pytest
 
-parametrize = pytest.mark.parametrize(
-    "param1, param2", [("A", "A"), (2, 2), (3, 3), (4, 5)]
-)
+parametrize = pytest.mark.parametrize("param1, param2", [("A", "A"), (2, 2), (3, 3), (4, 5)])
 
 
 @pytest.fixture(scope="session")
@@ -12,21 +10,22 @@ def print_x():
     yield
     print("Running teardown for the test session.")
 
+
 class TestDummy:
     @pytest.mark.test_pass
-    def test_pass(self, print_x):
+    def test_pass(self, print_x):  # pylint: disable=R6301, W0613,  W0621
         assert True
 
     @pytest.mark.test_fail
-    def test_false(self):
-        assert False, {"message": "This test is expected to fail."}
+    def test_false(self):  # pylint: disable=R6301, W0613,  W0621
+        assert False, {"message": "This test is expected to fail."}  # noqa: B011
 
     @pytest.mark.fail2skip(reason="This test is expected to fail and be skipped.")
-    def test_fail2skip(self):
-        assert False, {"message": "This test is expected to fail."}
+    def test_fail2skip(self):  # pylint: disable=R6301, W0613,  W0621
+        assert False, {"message": "This test is expected to fail."}  # noqa: B011
 
     @parametrize
-    def test_with_parameters_1(self, param1, param2):
+    def test_with_parameters_1(self, param1, param2):  # pylint: disable=R6301, W0613,  W0621
         assert param1 != param2, {
             "expected_value": param1,
             "actual_value": param2,
@@ -34,7 +33,7 @@ class TestDummy:
         }
 
     @pytest.mark.parametrize("param1, param2", [(1, 1), (2, 2), (3, 3), (4, 5)])
-    def test_with_parameters_2(self, param1, param2):
+    def test_with_parameters_2(self, param1, param2):  # pylint: disable=R6301, W0613,  W0621
         assert param1 != param2
 
 
@@ -51,8 +50,8 @@ def test_dummy_2():
 
 @pytest.mark.skip
 class TestDummy2:
-    def test_pass(self, print_x):
+    def test_pass(self, print_x):  # pylint: disable=R6301, W0613,  W0621
         assert True
 
-    def test_pass2(self, print_x):
+    def test_pass2(self, print_x):  # pylint: disable=R6301, W0613,  W0621
         assert True

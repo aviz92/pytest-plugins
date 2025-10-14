@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 from pytest_plugins.models.status import ExecutionStatus
 
@@ -13,10 +12,10 @@ class TestData:
     test_full_name: str
     test_full_path: str
     test_status: ExecutionStatus = ExecutionStatus.COLLECTED
-    test_parameters: Optional[dict[str, str]] = None
-    test_markers: Optional[list] = None
-    test_start_time: Optional[str] = None
-    test_end_time: Optional[str] = None
-    test_duration_sec: Optional[float] = None  # only for the tst itself, not including fixtures
-    exception_message: Optional[str] = None
-    run_index: Optional[int] = None
+    test_parameters: dict[str, str] | None = None
+    test_markers: list | None = None
+    test_start_time: str | None = None
+    test_end_time: str | None = None
+    test_duration_sec: float | None = None  # only for the tst itself, not including fixtures
+    exception_message: str | None = None
+    run_index: int | None = None

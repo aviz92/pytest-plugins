@@ -8,7 +8,4 @@ pytest_plugins = [
     "pytest_plugins.verbose_param_ids",
 ]
 
-logger = build_logger(
-    project_name="pytest-plugins",
-    log_file=True
-)
+logger = build_logger(project_name="pytest-plugins", log_file=True)
