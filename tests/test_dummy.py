@@ -11,6 +11,12 @@ def print_x():
     print("Running teardown for the test session.")
 
 
+@pytest.mark.abc
+def test_abc():
+    """A dummy test to ensure pytest is working."""
+    assert True, "This is a dummy test to ensure pytest is working."
+
+
 class TestDummy:
     @pytest.mark.test_pass
     def test_pass(self, print_x):  # pylint: disable=R6301, W0613,  W0621
