@@ -11,10 +11,22 @@ def print_x():
     print("Running teardown for the test session.")
 
 
+@pytest.mark.xfail(reason="This feature is not implemented yet")
+def test_expected_to_fail():
+    # This will FAIL → pytest marks it as XFAIL
+    assert 2 + 2 == 5
+
+
+@pytest.mark.xfail(reason="Known bug, not fixed yet")
+def test_unexpected_pass():
+    # This actually passes, even though we marked it xfail
+    assert 2 + 2 == 4
+
+
 @pytest.mark.abc
 def test_abc():
     """A dummy test to ensure pytest is working."""
-    assert True, "This is a dummy test to ensure pytest is working."
+    assert False, "This is a dummy test to ensure pytest is working."
 
 
 class TestDummy:

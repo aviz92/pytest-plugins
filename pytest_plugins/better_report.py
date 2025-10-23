@@ -215,7 +215,17 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         logger.warning(f"Test {test_full_name} missing in test_results during makereport")
         return
 
-    test_item.test_status = ExecutionStatus.PASSED if call.excinfo is None else ExecutionStatus.FAILED
+    if hasattr(report, "wasxfail"):
+        if report.skipped:
+            test_item.test_status = ExecutionStatus.XFAIL
+        elif report.passed:
+            test_item.test_status = ExecutionStatus.XPASS
+    elif report.passed:
+        test_item.test_status = ExecutionStatus.PASSED
+    elif report.failed:
+        test_item.test_status = ExecutionStatus.FAILED
+    elif report.skipped:
+        test_item.test_status = ExecutionStatus.SKIPPED
 
     if call.excinfo:
         exception_message = str(call.excinfo.value).split("\nassert", maxsplit=1)[0]
