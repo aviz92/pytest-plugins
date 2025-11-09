@@ -19,6 +19,7 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
     - `--commit`: Include the commit hash in the report for better traceability.
     - `--add-parameters`: Add the test parameters as fields to the test results.
     - `--pytest-command`: Add the detailed information about the pytest command-line to the "execution_results.json" file
+    - `--pytest-xfail-strict`: Enable strict xfail handling, treating unexpected passes as failures, if set to True "execution status" will be "failed" when there is at least one xpass test
 <br> <br>
 - ✅ **maxfail-streak**: Stop test execution after a configurable number of consecutive failures.
     - flags:

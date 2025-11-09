@@ -73,6 +73,12 @@ def pytest_addoption(parser: Parser) -> None:
         default=None,
         help='Add the detailed information about the pytest command-line to the "execution_results.json" file',
     )
+    parser.addoption(
+        "--pytest-xfail-strict",
+        action="store_true",
+        default=False,
+        help='Enable strict xfail handling, treating unexpected passes as failures, if set to True "execution status" will be "failed" when there is at least one xpass test',
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -172,9 +178,12 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
         exec_info.execution_duration_sec = None
 
     # update execution status
+    _test_pass_status_list = [ExecutionStatus.PASSED, ExecutionStatus.SKIPPED, ExecutionStatus.XFAIL]
+    if not request.config.getoption("--pytest-xfail-strict"):
+        _test_pass_status_list.append(ExecutionStatus.XPASS)
     exec_info.execution_status = (
         ExecutionStatus.PASSED
-        if all(t.test_status in [ExecutionStatus.PASSED, ExecutionStatus.SKIPPED] for t in test_results.values())
+        if all(t.test_status in _test_pass_status_list for t in test_results.values())
         else ExecutionStatus.FAILED
     )
 
