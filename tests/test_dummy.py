@@ -73,3 +73,12 @@ class TestDummy2:
 
     def test_pass2(self, print_x):  # pylint: disable=R6301, W0613,  W0621
         assert True
+
+
+@pytest.mark.xfail
+class TestDummy3:
+    def test_pass(self, print_x):  # pylint: disable=R6301, W0613,  W0621
+        assert True
+
+    def test_pass2(self, print_x):  # pylint: disable=R6301, W0613,  W0621
+        assert False

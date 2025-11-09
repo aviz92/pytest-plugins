@@ -178,14 +178,23 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
         exec_info.execution_duration_sec = None
 
     # update execution status
-    _test_pass_status_list = [ExecutionStatus.PASSED, ExecutionStatus.SKIPPED, ExecutionStatus.XFAIL]
+    _test_pass_status_list = [
+        ExecutionStatus.PASSED,
+        ExecutionStatus.SKIPPED,
+        ExecutionStatus.XFAIL,
+        ExecutionStatus.FAILED_SKIPPED
+    ]
     if not request.config.getoption("--pytest-xfail-strict"):
         _test_pass_status_list.append(ExecutionStatus.XPASS)
+    logger.debug(f"Test pass status list: {_test_pass_status_list}")
     exec_info.execution_status = (
         ExecutionStatus.PASSED
         if all(t.test_status in _test_pass_status_list for t in test_results.values())
         else ExecutionStatus.FAILED
     )
+    for t in test_results.values():
+        if t.test_status not in _test_pass_status_list:
+            logger.debug(f"Non-passing test found: {t.test_full_name} with status {t.test_status}")
 
     exec_info.test_list = list(test_results.keys())
 
