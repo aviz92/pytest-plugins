@@ -79,6 +79,12 @@ def pytest_addoption(parser: Parser) -> None:
         default=False,
         help='Enable strict xfail handling, treating unexpected passes as failures, if set to True "execution status" will be "failed" when there is at least one xpass test',
     )
+    parser.addoption(
+        "--result-each-test",
+        action="store_true",
+        default=False,
+        help='Print the pytest result for each test after its execution',
+    )
 
 
 def pytest_configure(config: Config) -> None:
@@ -288,7 +294,8 @@ def pytest_runtest_teardown(item: Function) -> None:
         except Exception as e:
             logger.error(f"Error computing test duration for {test_full_name}: {e}")
 
-    log_test_results(item=item, test_results=test_results)
+    if item.config.getoption("--result-each-test"):
+        log_test_results(item=item, test_results=test_results)
 
 
 def pytest_sessionfinish(session: Session) -> None:
