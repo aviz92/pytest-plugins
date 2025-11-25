@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-plugins"
-version = "1.0.10"
+version = "1.0.11"
 description = "A Python package for managing pytest plugins."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -42,3 +42,10 @@ Issues = "https://github.com/aviz92/pytest-plugins/issues"
 where = ["."]
 include = ["pytest_plugins*"]
 namespaces = false
+
+[project.entry-points.pytest11]
+better_report = "pytest_plugins.better_report"
+max_fail_streak = "pytest_plugins.max_fail_streak"
+fail2skip = "pytest_plugins.fail2skip"
+add_config_parameters = "pytest_plugins.add_config_parameters"
+verbose_param_ids = "pytest_plugins.verbose_param_ids"
