@@ -414,7 +414,7 @@ wheels = [
 
 [[package]]
 name = "pytest-plugins"
-version = "1.0.10"
+version = "1.0.12"
 source = { editable = "." }
 dependencies = [
     { name = "colorlog" },
