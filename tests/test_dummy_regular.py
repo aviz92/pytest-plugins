@@ -14,6 +14,3 @@ class TestDummy:
     @pytest.mark.xfail(reason="Known issue: x is not equal to y")
     def test_pass2(self):
         assert self.x == self.y
-
-
-print("test_dummy_regular.py")

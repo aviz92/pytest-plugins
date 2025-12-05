@@ -1,5 +1,13 @@
 def generate_md_report(report: dict) -> str:
-    status_icons = {"passed": "✅", "failed": "❌", "xpassed": "✅", "xfailed": "❌", "failed-skipped": "⚠️", "skipped": "⏭️", "collected": "📋"}
+    status_icons = {
+        "passed": "✅",
+        "failed": "❌",
+        "xpassed": "✅",
+        "xfailed": "❌",
+        "failed-skipped": "⚠️",
+        "skipped": "⏭️",
+        "collected": "📋",
+    }
     rows = ["| No. | Test Name | Status | Duration | Message |", "|:---:|-----------|:------:|:--------:|---------|"]
     stats = {"passed": 0, "failed": 0, "xpassed": 0, "xfailed": 0, "failed-skipped": 0, "skipped": 0, "collected": 0}
     for index, test in enumerate(report.values(), start=1):

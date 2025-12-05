@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-plugins"
-version = "1.0.11"
+version = "1.0.12"
 description = "A Python package for managing pytest plugins."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,12 +15,14 @@ keywords = ["development", "pytest", "plugins", "testing", "automation"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
+    "Framework :: Pytest",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
     "Topic :: System :: Logging",
 ]
 
 dependencies = [
+    "build>=1.3.0",
     "colorlog>=6.10.1",
     "custom-python-logger>=2.0.10",
     "pandas>=2.3.3",
