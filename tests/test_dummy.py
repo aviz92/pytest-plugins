@@ -32,7 +32,7 @@ def test_abc() -> None:
 
 class TestDummy:
     @pytest.mark.test_pass
-    def test_pass(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
+    def test_pass(self, print_x: None) -> None:  # pylint: disable=R6301, W0613,  W0621
         assert True
 
     @pytest.mark.test_fail
@@ -72,18 +72,18 @@ def test_dummy_2() -> None:
 
 @pytest.mark.skip
 class TestDummy2:
-    def test_pass(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
+    def test_pass(self, print_x: None) -> None:  # pylint: disable=R6301, W0613,  W0621
         assert True
 
-    def test_pass2(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
+    def test_pass2(self, print_x: None) -> None:  # pylint: disable=R6301, W0613,  W0621
         assert True
 
 
 @pytest.mark.xfail
 class TestDummy3:
-    def test_pass(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
+    def test_pass(self, print_x: None) -> None:  # pylint: disable=R6301, W0613,  W0621
         assert True
 
-    def test_pass2(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
+    def test_pass2(self, print_x: None) -> None:  # pylint: disable=R6301, W0613,  W0621
         with pytest.raises(AssertionError):
             assert False

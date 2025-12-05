@@ -54,6 +54,19 @@ repos: # Black → isort → Ruff (fix=false) → Pylint
           "--fix",
           "--config=.config/ruff.toml"
         ]
+        exclude: ^tests/  # ^(tests/|other_dir/)
+        types: [ python ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.7
+    hooks:
+      - id: ruff
+        name: Ruff (Python linter tests)
+        args: [
+          "--fix",
+          "--config=.config/ruff_tests.toml"
+        ]
+        files: ^tests/
         types: [ python ]
 
     # ### pylint ###
