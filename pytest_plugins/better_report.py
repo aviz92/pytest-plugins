@@ -77,13 +77,14 @@ def pytest_addoption(parser: Parser) -> None:
         "--pytest-xfail-strict",
         action="store_true",
         default=False,
-        help='Enable strict xfail handling, treating unexpected passes as failures, if set to True "execution status" will be "failed" when there is at least one xpass test',
+        help="Enable strict xfail handling, treating unexpected passes as failures, if set to True "
+        '"execution status" will be "failed" when there is at least one xpass test',
     )
     parser.addoption(
         "--result-each-test",
         action="store_true",
         default=False,
-        help='Print the pytest result for each test after its execution',
+        help="Print the pytest result for each test after its execution",
     )
 
 
@@ -189,7 +190,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
         ExecutionStatus.PASSED,
         ExecutionStatus.SKIPPED,
         ExecutionStatus.XFAIL,
-        ExecutionStatus.FAILED_SKIPPED
+        ExecutionStatus.FAILED_SKIPPED,
     ]
     if not request.config.getoption("--pytest-xfail-strict"):
         _test_pass_status_list.append(ExecutionStatus.XPASS)
@@ -214,7 +215,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:
+def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:  # pylint: disable=R1260, R0912
     if not getattr(item.config, "_better_report_enabled", None):
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         yield
@@ -240,11 +241,10 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         logger.warning(f"Test {test_full_name} missing in test_results during makereport")
         return
 
-    if hasattr(report, "wasxfail"):
-        if report.skipped:
-            test_item.test_status = ExecutionStatus.XFAIL
-        elif report.passed:
-            test_item.test_status = ExecutionStatus.XPASS
+    if hasattr(report, "wasxfail") and report.skipped:
+        test_item.test_status = ExecutionStatus.XFAIL  # pylint: disable=R0204
+    elif hasattr(report, "wasxfail") and report.passed:
+        test_item.test_status = ExecutionStatus.XPASS
     elif report.passed:
         test_item.test_status = ExecutionStatus.PASSED
     elif report.failed:
