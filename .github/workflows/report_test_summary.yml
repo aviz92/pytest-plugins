@@ -41,7 +41,7 @@ jobs:
       - name: Run test summary and generate markdown
         run: |
           cd scripts
-          python summarize_tests.py $GITHUB_SHA
+          uv run summarize_tests.py $GITHUB_SHA
 
       - name: Upload test summary artifact
         uses: actions/upload-artifact@v4
@@ -57,4 +57,4 @@ jobs:
       - name: Fail job if tests failed
         run: |
           cd scripts
-          python check_status_tests.py
+          uv run check_status_tests.py
