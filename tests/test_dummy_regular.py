@@ -6,6 +6,7 @@ class TestDummy:
         self.x = 1  # pylint: disable=W0201
         self.y = 2  # pylint: disable=W0201
 
+    @pytest.mark.xxx
     def test_pass(self):
         if self.x != self.y:
             pytest.xfail("Known issue: x is not equal to y")

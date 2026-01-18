@@ -707,7 +707,7 @@ wheels = [
 
 [[package]]
 name = "pytest-plugins"
-version = "1.0.12"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "build" },

@@ -21,6 +21,7 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
     - `--pytest-command`: Add the detailed information about the pytest command-line to the "execution_results.json" file
     - `--pytest-xfail-strict`: Enable strict xfail handling, treating unexpected passes as failures, if set to True "execution status" will be "failed" when there is at least one xpass test
     - `--result-each-test`: Print the pytest result for each test after its execution
+    - `--log-collected-tests`: Log all collected tests at the start of the test session
 <br> <br>
 - ✅ **maxfail-streak**: Stop test execution after a configurable number of consecutive failures.
     - flags:

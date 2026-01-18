@@ -78,13 +78,19 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         default=False,
         help="Enable strict xfail handling, treating unexpected passes as failures, if set to True "
-        '"execution status" will be "failed" when there is at least one xpass test',
+             '"execution status" will be "failed" when there is at least one xpass test',
     )
     parser.addoption(
         "--result-each-test",
         action="store_true",
         default=False,
         help="Print the pytest result for each test after its execution",
+    )
+    parser.addoption(
+        "--log-collected-tests",
+        action="store_true",
+        default=False,
+        help="Log all collected tests at the start of the test session",
     )
 
 
@@ -132,8 +138,17 @@ def pytest_sessionstart(session: Session) -> None:
     logger.debug("Better report: Test session started")
 
 
-@pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None:
+    if not config.getoption("--log-collected-tests"):
+        return
+
+    for item in items:
+        test_full_name = get_test_full_name(item=item)
+        logger.debug(f"Collected test: {test_full_name}")
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_report_collectionfinish(config: Config, items: list[Function]) -> None:
     if not getattr(config, "_better_report_enabled", None):
         return
 
