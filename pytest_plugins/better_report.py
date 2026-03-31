@@ -94,6 +94,7 @@ def pytest_addoption(parser: Parser) -> None:
     )
 
 
+@pytest.hookimpl(trylast=True)
 def pytest_configure(config: Config) -> None:
     if not config.getoption("--better-report"):
         return
