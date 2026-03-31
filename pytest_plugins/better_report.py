@@ -100,11 +100,13 @@ def pytest_configure(config: Config) -> None:
 
     config._better_report_enabled = config.getoption("--better-report")  # pylint: disable=W0212
 
-    output_dir = Path("results_output")
+    results_output_dir = Path("logs/results_output")
+    project_root = get_project_root()
     if _output_dir := config.getoption("--output-dir"):
-        config.option.output_dir = get_project_root() / _output_dir / output_dir if get_project_root() else output_dir
+        config.option.output_dir = project_root/_output_dir/results_output_dir if project_root else results_output_dir
     else:
-        config.option.output_dir = get_project_root() / Path("results_output") if get_project_root() else output_dir
+        config.option.output_dir = project_root / results_output_dir if project_root else results_output_dir
+    logger.info(f"Better report plugin enabled. Output directory set to: {config.option.output_dir}")
 
 
 def pytest_sessionstart(session: Session) -> None:
@@ -226,7 +228,8 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
     save_as_json(path=output_dir / "execution_results.json", data=execution_results, default=default_serialize)
     save_as_json(path=output_dir / "test_results.json", data=test_results, default=default_serialize)
-    logger.info("Better report: Execution results saved")
+    logger.info(f"Better report: Execution results saved to {output_dir / 'execution_results.json'}")
+    logger.info(f"Better report: Test results saved to {output_dir / 'test_results.json'}'")
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
