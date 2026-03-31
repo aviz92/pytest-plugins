@@ -100,7 +100,7 @@ def pytest_configure(config: Config) -> None:
 
     config._better_report_enabled = config.getoption("--better-report")  # pylint: disable=W0212
 
-    results_output_dir = Path("logs/results_output")
+    results_output_dir = Path("results_output")
     project_root = get_project_root()
     if _output_dir := config.getoption("--output-dir"):
         config.option.output_dir = project_root/_output_dir/results_output_dir if project_root else results_output_dir
