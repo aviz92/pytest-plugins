@@ -94,26 +94,21 @@ def pytest_addoption(parser: Parser) -> None:
     )
 
 
-@pytest.hookimpl(trylast=True)
+@pytest.hookimpl(tryfirst=True)
 def pytest_configure(config: Config) -> None:
     if not config.getoption("--better-report"):
         return
 
     config._better_report_enabled = config.getoption("--better-report")  # pylint: disable=W0212
-
-    results_output_dir = Path("results_output")
-    project_root = get_project_root()
-    if _output_dir := config.getoption("--output-dir"):
-        config.option.output_dir = project_root/_output_dir/results_output_dir if project_root else results_output_dir
-    else:
-        config.option.output_dir = project_root / results_output_dir if project_root else results_output_dir
-    logger.info(f"Better report plugin enabled. Output directory set to: {config.option.output_dir}")
+    config._output_dir = config.getoption("--output-dir") / 'results_output'  # pylint: disable=W0212
 
 
 def pytest_sessionstart(session: Session) -> None:
     if not getattr(session.config, "_better_report_enabled", None):
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
+
+    logger.info(f"Better report plugin enabled. Output directory set to: {session.config.option.output_dir.absolute()}")
 
     execution_results["environment_info"] = EnvironmentData(
         python_version=platform.python_version(),
