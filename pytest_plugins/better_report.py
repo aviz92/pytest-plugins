@@ -99,15 +99,23 @@ def pytest_configure(config: Config) -> None:
     if not config.getoption("--better-report"):
         return
 
-    config.option.output_dir = config.getoption("--output-dir") / 'results_output'  # pylint: disable=W0212
+    if config.option.output_dir:
+        config.option.output_dir = config.option.output_dir / 'results_output'
+    else:
+        config.option.output_dir = Path('results_output')
 
 
 def pytest_sessionstart(session: Session) -> None:
     if not session.config.option.better_report:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
+    logger.info(f"Better report plugin enabled.")
+    logger.info(f"Output directory set to: {session.config.option.output_dir}")
 
-    logger.info(f"Better report plugin enabled. Output directory set to: {session.config.option.output_dir.absolute()}")
+    # if session.config.option.output_dir:
+    #     logger.info(f"Output directory set to: {session.config.option.output_dir}")
+    # else:
+    #     logger.info(f"Output directory not set, results will not be saved to a file")
 
     execution_results["environment_info"] = EnvironmentData(
         python_version=platform.python_version(),
