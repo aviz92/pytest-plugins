@@ -18,7 +18,7 @@ from python_base_toolkit.utils.data_serialization import default_serialize
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
 from pytest_plugins.models.environment_data import EnvironmentData
 from pytest_plugins.utils.create_report import generate_md_report
-from pytest_plugins.utils.helper import get_project_root, save_as_json, save_as_markdown
+from pytest_plugins.utils.helper import save_as_json, save_as_markdown
 from pytest_plugins.utils.pytest_helper import (
     get_pytest_test_name,
     get_test_full_name,
@@ -99,12 +99,11 @@ def pytest_configure(config: Config) -> None:
     if not config.getoption("--better-report"):
         return
 
-    config._better_report_enabled = config.getoption("--better-report")  # pylint: disable=W0212
-    config._output_dir = config.getoption("--output-dir") / 'results_output'  # pylint: disable=W0212
+    config.option.output_dir = config.getoption("--output-dir") / 'results_output'  # pylint: disable=W0212
 
 
 def pytest_sessionstart(session: Session) -> None:
-    if not getattr(session.config, "_better_report_enabled", None):
+    if not session.config.option.better_report:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
 
@@ -147,7 +146,7 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_report_collectionfinish(config: Config, items: list[Function]) -> None:
-    if not getattr(config, "_better_report_enabled", None):
+    if not config.option.better_report:
         return
 
     for item in items:
@@ -178,7 +177,7 @@ def pytest_report_collectionfinish(config: Config, items: list[Function]) -> Non
 def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None]:
     yield
 
-    if not getattr(request.config, "_better_report_enabled", None):
+    if not request.config.option.better_report:
         return
 
     if not (exec_info := execution_results.get("execution_info")):
@@ -230,7 +229,7 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
 def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any, None]:  # pylint: disable=R1260, R0912
-    if not getattr(item.config, "_better_report_enabled", None):
+    if not item.config.option.better_report:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         yield
         return
@@ -248,7 +247,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     outcome = yield
     report = outcome.get_result()
 
-    if report.when != "call" or not getattr(item.config, "_better_report_enabled", None):
+    if report.when != "call" or not item.config.option.better_report:
         return
 
     if not test_item:
@@ -291,7 +290,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
 
 
 def pytest_runtest_teardown(item: Function) -> None:
-    if not getattr(item.config, "_better_report_enabled", None):
+    if not item.config.option.better_report:
         return
 
     test_full_name = get_test_full_name(item=item)
@@ -313,7 +312,7 @@ def pytest_runtest_teardown(item: Function) -> None:
 
 
 def pytest_sessionfinish(session: Session) -> None:
-    if session.config.getoption("--collect-only") or not getattr(session.config, "_better_report_enabled", None):
+    if session.config.getoption("--collect-only") or not session.config.option.better_report:
         return
 
     exit_status_code = session.session.exitstatus
