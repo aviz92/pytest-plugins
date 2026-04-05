@@ -27,6 +27,9 @@ from pytest_plugins.utils.pytest_helper import (
     log_test_results,
 )
 
+EXECUTION_RESULTS_FILENAME = "execution_results.json"
+TEST_RESULTS_FILENAME = "test_results.json"
+
 execution_results = {}
 test_results = {}
 
@@ -78,7 +81,7 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         default=False,
         help="Enable strict xfail handling, treating unexpected passes as failures, if set to True "
-             '"execution status" will be "failed" when there is at least one xpass test',
+        '"execution status" will be "failed" when there is at least one xpass test',
     )
     parser.addoption(
         "--result-each-test",
@@ -100,16 +103,16 @@ def pytest_configure(config: Config) -> None:
         return
 
     if config.option.output_dir:
-        config.option.output_dir = config.option.output_dir / 'results_output'
+        config.option.output_dir = config.option.output_dir / "results_output"
     else:
-        config.option.output_dir = Path('results_output')
+        config.option.output_dir = Path("results_output")
 
 
 def pytest_sessionstart(session: Session) -> None:
     if not session.config.option.better_report:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
-    logger.info(f"Better report plugin enabled.")
+    logger.info("Better report plugin enabled.")
     logger.info(f"Output directory set to: {session.config.option.output_dir}")
 
     # if session.config.option.output_dir:
@@ -229,10 +232,10 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
     output_dir = request.config.option.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    save_as_json(path=output_dir / "execution_results.json", data=execution_results, default=default_serialize)
-    save_as_json(path=output_dir / "test_results.json", data=test_results, default=default_serialize)
-    logger.info(f"Better report: Execution results saved to {output_dir / 'execution_results.json'}")
-    logger.info(f"Better report: Test results saved to {output_dir / 'test_results.json'}'")
+    save_as_json(path=output_dir / EXECUTION_RESULTS_FILENAME, data=execution_results, default=default_serialize)
+    save_as_json(path=output_dir / TEST_RESULTS_FILENAME, data=test_results, default=default_serialize)
+    logger.info(f"Better report: Execution results saved to {output_dir / EXECUTION_RESULTS_FILENAME}")
+    logger.info(f"Better report: Test results saved to {output_dir / TEST_RESULTS_FILENAME}'")
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
