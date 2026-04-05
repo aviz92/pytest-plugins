@@ -66,6 +66,4 @@ class TestExecutionData:
             revision="rev",
         )
         data.execution_end_time = "2024-01-01T12:01:00+00:00"
-        assert data.execution_end_time == "2024-01-01T12:01:00+00:00", (
-            "Expected execution_end_time to be updatable"
-        )
+        assert data.execution_end_time == "2024-01-01T12:01:00+00:00", "Expected execution_end_time to be updatable"

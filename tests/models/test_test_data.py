@@ -18,9 +18,7 @@ def make_test_data(**kwargs) -> TestData:
 class TestTestData:
     def test_default_status_is_collected(self) -> None:
         data = make_test_data()
-        assert data.test_status == ExecutionStatus.COLLECTED, (
-            f"Expected COLLECTED, got {data.test_status}"
-        )
+        assert data.test_status == ExecutionStatus.COLLECTED, f"Expected COLLECTED, got {data.test_status}"
 
     def test_optional_fields_default_to_none(self) -> None:
         data = make_test_data()
@@ -40,9 +38,7 @@ class TestTestData:
         )
         assert data.test_file_name == "test_example.py", "Expected test_file_name to match"
         assert data.test_name == "test_something", "Expected test_name to match"
-        assert data.test_full_path == "tests/test_example.py::test_something", (
-            "Expected test_full_path to match"
-        )
+        assert data.test_full_path == "tests/test_example.py::test_something", "Expected test_full_path to match"
 
     def test_create_with_class_name(self) -> None:
         data = make_test_data(class_test_name="TestFoo")

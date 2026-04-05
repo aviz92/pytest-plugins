@@ -22,9 +22,7 @@ class TestGenerateMdReport:
 
     def test_report_contains_table_headers(self) -> None:
         result = generate_md_report(report={"t": _make_test_entry()})
-        assert "| No. | Test Name | Status | Duration | Message |" in result, (
-            "Expected table headers row"
-        )
+        assert "| No. | Test Name | Status | Duration | Message |" in result, "Expected table headers row"
 
     def test_passed_test_shows_checkmark_icon(self) -> None:
         result = generate_md_report(report={"t": _make_test_entry(test_status="passed")})

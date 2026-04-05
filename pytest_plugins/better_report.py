@@ -81,7 +81,7 @@ def pytest_addoption(parser: Parser) -> None:
         action="store_true",
         default=False,
         help="Enable strict xfail handling, treating unexpected passes as failures, if set to True "
-             '"execution status" will be "failed" when there is at least one xpass test',
+        '"execution status" will be "failed" when there is at least one xpass test',
     )
     parser.addoption(
         "--result-each-test",
@@ -103,16 +103,16 @@ def pytest_configure(config: Config) -> None:
         return
 
     if config.option.output_dir:
-        config.option.output_dir = config.option.output_dir / 'results_output'
+        config.option.output_dir = config.option.output_dir / "results_output"
     else:
-        config.option.output_dir = Path('results_output')
+        config.option.output_dir = Path("results_output")
 
 
 def pytest_sessionstart(session: Session) -> None:
     if not session.config.option.better_report:
         logger.debug("Better report plugin is not enabled, skipping session start processing")
         return
-    logger.info(f"Better report plugin enabled.")
+    logger.info("Better report plugin enabled.")
     logger.info(f"Output directory set to: {session.config.option.output_dir}")
 
     # if session.config.option.output_dir:

@@ -4,9 +4,16 @@ from pytest_plugins.models.status import ExecutionStatus
 class TestExecutionStatus:
     def test_all_expected_members_defined(self) -> None:
         expected = {
-            "COLLECTED", "STARTED", "PENDING", "PASSED",
-            "FAILED", "XFAIL", "XPASS", "CANCELLED",
-            "SKIPPED", "FAILED_SKIPPED",
+            "COLLECTED",
+            "STARTED",
+            "PENDING",
+            "PASSED",
+            "FAILED",
+            "XFAIL",
+            "XPASS",
+            "CANCELLED",
+            "SKIPPED",
+            "FAILED_SKIPPED",
         }
         actual = {s.name for s in ExecutionStatus}
         assert actual == expected, f"Expected members {expected}, got {actual}"
@@ -27,9 +34,9 @@ class TestExecutionStatus:
         assert ExecutionStatus.XPASS == "xpassed", "Expected XPASS value to be 'xpassed'"
 
     def test_failed_skipped_value(self) -> None:
-        assert ExecutionStatus.FAILED_SKIPPED == "failed-skipped", (
-            "Expected FAILED_SKIPPED value to be 'failed-skipped'"
-        )
+        assert (
+            ExecutionStatus.FAILED_SKIPPED == "failed-skipped"
+        ), "Expected FAILED_SKIPPED value to be 'failed-skipped'"
 
     def test_collected_value(self) -> None:
         assert ExecutionStatus.COLLECTED == "collected", "Expected COLLECTED value to be 'collected'"

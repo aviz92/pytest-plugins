@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
 
-import pytest
-
+from pytest_plugins.models import ExecutionStatus
 from pytest_plugins.utils.helper import get_project_root, open_json, save_as_json, save_as_markdown
 
 
@@ -61,8 +60,6 @@ class TestSaveAsJson:
         assert "\n" in content, "Expected indented (multi-line) JSON output"
 
     def test_uses_custom_default_serializer(self, tmp_path: Path) -> None:
-        from pytest_plugins.models.status import ExecutionStatus
-
         data = {"status": ExecutionStatus.PASSED}
         output_file = tmp_path / "output.json"
         save_as_json(path=output_file, data=data, default=str)
