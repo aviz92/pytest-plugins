@@ -44,6 +44,10 @@ generate `execution_results.json`, `test_results.json`, and `test_report`.md und
 - ✅ **verbose-param-ids**: Enhance test IDs with parameter names for better clarity in pytest reports.
 - flags:
     - `--verbose-param-ids`: Include parameter names in pytest test IDs (e.g., `(param1: value1, param2: value2)` instead of `(param1-param2))`
+<br> <br>
+- ✅ **require-tests**: Fail the run if no tests were collected. Raises a `UsageError` (exit code 4) when `--require-tests` is set and zero tests are found.
+  - flags:
+    - `--require-tests`: Enable the require-tests feature.
 
 ---
 
@@ -70,6 +74,7 @@ addopts =
     --verbose-param-ids
     --md-report
     --traceback
+    --require-tests
 ```
 
 ---
