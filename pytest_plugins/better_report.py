@@ -27,6 +27,9 @@ from pytest_plugins.utils.pytest_helper import (
     log_test_results,
 )
 
+EXECUTION_RESULTS_FILENAME = "execution_results.json"
+TEST_RESULTS_FILENAME = "test_results.json"
+
 execution_results = {}
 test_results = {}
 
@@ -229,10 +232,10 @@ def session_setup_teardown(request: FixtureRequest) -> Generator[None, Any, None
     output_dir = request.config.option.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    save_as_json(path=output_dir / "execution_results.json", data=execution_results, default=default_serialize)
-    save_as_json(path=output_dir / "test_results.json", data=test_results, default=default_serialize)
-    logger.info(f"Better report: Execution results saved to {output_dir / 'execution_results.json'}")
-    logger.info(f"Better report: Test results saved to {output_dir / 'test_results.json'}'")
+    save_as_json(path=output_dir / EXECUTION_RESULTS_FILENAME, data=execution_results, default=default_serialize)
+    save_as_json(path=output_dir / TEST_RESULTS_FILENAME, data=test_results, default=default_serialize)
+    logger.info(f"Better report: Execution results saved to {output_dir / EXECUTION_RESULTS_FILENAME}")
+    logger.info(f"Better report: Test results saved to {output_dir / TEST_RESULTS_FILENAME}'")
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)

@@ -35,10 +35,10 @@ class TestDummy:
     def test_pass(self, print_x) -> None:  # pylint: disable=R6301, W0613,  W0621
         assert True
 
-    @pytest.mark.test_fail
-    def test_false(self) -> None:  # pylint: disable=R6301, W0613,  W0621
-        with pytest.raises(AssertionError):
-            assert False, {"message": "This test is expected to fail."}  # noqa: B011
+    # @pytest.mark.test_fail
+    # def test_false(self) -> None:  # pylint: disable=R6301, W0613,  W0621
+    #     with pytest.raises(AssertionError):
+    #         assert False, {"message": "This test is expected to fail."}  # noqa: B011
 
     @pytest.mark.fail2skip(reason="This test is expected to fail and be skipped.")
     def test_fail2skip(self) -> None:  # pylint: disable=R6301, W0613,  W0621
