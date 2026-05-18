@@ -15,6 +15,7 @@ from _pytest.python import Function
 from custom_python_logger import get_logger
 from python_base_toolkit.utils.data_serialization import default_serialize
 
+from pytest_plugins.const import LOGGER_NAME
 from pytest_plugins.models import ExecutionData, ExecutionStatus, TestData
 from pytest_plugins.models.environment_data import EnvironmentData
 from pytest_plugins.utils.create_report import generate_md_report
@@ -33,7 +34,7 @@ TEST_RESULTS_FILENAME = "test_results.json"
 execution_results = {}
 test_results = {}
 
-logger = get_logger("pytest_plugins.better_report")
+logger = get_logger(f"{LOGGER_NAME}.better_report")
 
 
 def pytest_addoption(parser: Parser) -> None:

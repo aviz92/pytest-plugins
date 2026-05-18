@@ -4,7 +4,9 @@ from _pytest.python import Function
 from custom_python_logger import get_logger
 from python_base_toolkit.utils.data_serialization import default_serialize
 
-logger = get_logger(__name__)
+from pytest_plugins import LOGGER_NAME
+
+logger = get_logger(LOGGER_NAME)
 
 
 def get_test_path_without_parameters(item: Function) -> str:

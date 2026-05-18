@@ -4,10 +4,11 @@ from _pytest.python import Function
 from custom_python_logger import get_logger
 
 from pytest_plugins.better_report import test_results
+from pytest_plugins.const import LOGGER_NAME
 from pytest_plugins.models import ExecutionStatus
 from pytest_plugins.utils.pytest_helper import get_test_full_name
 
-logger = get_logger("pytest_plugins.max_fail_streak")
+logger = get_logger(f"{LOGGER_NAME}.max_fail_streak")
 global_interface = {}
 
 

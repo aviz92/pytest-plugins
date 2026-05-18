@@ -5,7 +5,9 @@ from pathlib import Path
 from custom_python_logger import get_logger
 from python_base_toolkit.utils.data_serialization import default_serialize
 
-logger = get_logger("pytest_plugins.utils")
+from pytest_plugins import LOGGER_NAME
+
+logger = get_logger(f"{LOGGER_NAME}")
 
 
 def get_project_root(marker: str = ".git") -> Path | None:

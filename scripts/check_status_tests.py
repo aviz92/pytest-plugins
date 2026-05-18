@@ -5,7 +5,9 @@ from collections import Counter
 
 from custom_python_logger import build_logger
 
-logger = build_logger(project_name="Automation-Tests-Check-Status", log_level=logging.DEBUG)
+from pytest_plugins import LOGGER_NAME
+
+logger = build_logger(project_name=f"{LOGGER_NAME}.automation_tests_check_status", log_level=logging.DEBUG)
 
 
 def summarize_tests(json_path: str) -> None:
