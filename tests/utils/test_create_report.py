@@ -4,7 +4,7 @@ from pytest_plugins.utils.create_report import generate_md_report
 def _make_test_entry(
     test_full_name: str = "test_foo",
     test_status: str = "passed",
-    test_duration_sec: float = 1.0,
+    test_duration_sec: float | None = 1.0,
     exception_message: dict | None = None,
 ) -> dict:
     return {
@@ -62,6 +62,10 @@ class TestGenerateMdReport:
     def test_duration_formatted_to_two_decimal_places(self) -> None:
         result = generate_md_report(report={"t": _make_test_entry(test_duration_sec=1.5)})
         assert "1.50s" in result, "Expected duration formatted to 2 decimal places"
+
+    def test_none_duration_shows_dash_placeholder(self) -> None:
+        result = generate_md_report(report={"t": _make_test_entry(test_status="collected", test_duration_sec=None)})
+        assert "| - |" in result, "Expected dash placeholder for unrun test with no duration"
 
     def test_summary_shows_correct_total_count(self) -> None:
         report = {

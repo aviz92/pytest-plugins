@@ -15,7 +15,8 @@ def generate_md_report(report: dict) -> str:
         stats[status] += 1
         name = test["test_full_name"]
         icon = status_icons.get(status, status)
-        duration = f"{test['test_duration_sec']:.2f}s"
+        duration_sec = test["test_duration_sec"]
+        duration = f"{duration_sec:.2f}s" if duration_sec is not None else "-"
         msg = test["exception_message"]["message"] if test["exception_message"] else "-"
         rows.append(f"|{index}| `{name}` | {icon} {status} | {duration} | `{msg}` |")
 
