@@ -21,11 +21,11 @@ classifiers = [
 ]
 
 dependencies = [
-    "custom-python-logger>=4.0.0",
-    "pytest>=9.0.1",
+    "custom-python-logger>=4.1.0",
+    "pytest>=9.0.2",
     "python-base-command>=0.1.8",
-    "python-base-toolkit>=0.0.2",
-    "python-dotenv>=1.2.1",
+    "python-base-toolkit>=1.1.2",
+    "python-dotenv>=1.2.2",
 ]
 
 [dependency-groups]
