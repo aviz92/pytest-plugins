@@ -84,8 +84,7 @@ def load_report(path: Path, test_file_name: str | None = None) -> dict[str, dict
     for entry in raw.values():
         if test_file_name and entry.get("test_file_name") != test_file_name:
             continue
-        pytest_name = entry.get("pytest_test_name")
-        if pytest_name:
+        if pytest_name := entry.get("pytest_test_name"):
             indexed[pytest_name] = entry
     return indexed
 
@@ -152,7 +151,8 @@ class Command(BaseCommand):
             type=str,
             required=False,
             default=None,
-            help="Filter comparison to tests belonging to this test_file_name (e.g. test_advertiser_services_missing.py).",
+            help="Filter comparison to tests belonging to this test_file_name "
+            "(e.g. test_advertiser_services_missing.py).",
         )
 
     def handle(self, **kwargs: Any) -> None:
