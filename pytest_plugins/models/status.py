@@ -7,6 +7,7 @@ class ExecutionStatus(StrEnum):
     PENDING = "pending"
     PASSED = "passed"
     FAILED = "failed"
+    ERROR = "error"
     XFAIL = "xfailed"
     XPASS = "xpassed"
     CANCELLED = "cancelled"
