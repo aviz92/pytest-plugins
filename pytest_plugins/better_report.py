@@ -164,6 +164,7 @@ def pytest_report_collectionfinish(config: Config, items: list[Function]) -> Non
     for item in items:
         test_name = get_test_name_without_parameters(item=item)
         test_full_name = get_test_full_name(item=item)
+        has_callspec_params = bool(getattr(item, "callspec", None) and getattr(item.callspec, "params", None))
         test_results[test_full_name] = TestData(
             class_test_name=item.cls.__name__ if item.cls else None,
             test_name=test_name,
@@ -171,13 +172,13 @@ def pytest_report_collectionfinish(config: Config, items: list[Function]) -> Non
             test_full_name=test_full_name,
             test_full_path=get_test_full_path(item=item),
             test_file_name=item.fspath.basename,
-            test_parameters=item.callspec.params if getattr(item, "callspec", None) else None,
+            test_parameters=item.callspec.params if has_callspec_params else None,
             test_markers=[marker.name for marker in item.iter_markers() if not marker.args],
             test_status=ExecutionStatus.COLLECTED,
             test_start_time=None,
             run_index=len(test_results) + 1,
         )
-        if getattr(item, "callspec", None) and config.getoption("--add-parameters"):
+        if has_callspec_params and config.getoption("--add-parameters"):
             test_results[test_full_name].__dict__.update(**item.callspec.params)
     logger.debug(
         f"Tests to be executed: \n{json.dumps(list(test_results.keys()), indent=4, default=default_serialize)}"
@@ -259,7 +260,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     outcome = yield
     report = outcome.get_result()
 
-    if report.when != "call" or not item.config.option.better_report:
+    if report.when not in ["setup", "call"]:
         return
 
     if not test_item:
@@ -270,12 +271,12 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         test_item.test_status = ExecutionStatus.XFAIL  # pylint: disable=R0204
     elif hasattr(report, "wasxfail") and report.passed:
         test_item.test_status = ExecutionStatus.XPASS
-    elif report.passed:
-        test_item.test_status = ExecutionStatus.PASSED
     elif report.failed:
         test_item.test_status = ExecutionStatus.FAILED
     elif report.skipped:
         test_item.test_status = ExecutionStatus.SKIPPED
+    elif report.when == "call" and report.passed:
+        test_item.test_status = ExecutionStatus.PASSED
 
     if call.excinfo:
         exception_message = str(call.excinfo.value).split("\nassert", maxsplit=1)[0]
@@ -296,7 +297,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
                     }
                 }
             )
-
     else:
         test_item.exception_message = None
 

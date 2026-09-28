@@ -173,3 +173,23 @@ class TestBetterReport:
         assert (
             data["execution_info"]["execution_status"] == "passed"
         ), f"Expected 'passed' when skipped tests present, got {data['execution_info']['execution_status']}"
+
+    def test_skip_during_fixture_setup_marks_test_skipped(self, pytester: pytest.Pytester) -> None:
+        pytester.makepyfile(
+            """
+            import pytest
+
+            @pytest.fixture
+            def skipping_fixture():
+                pytest.skip("skipped test")
+
+            def test_uses_skipping_fixture(skipping_fixture) -> None:
+                pass
+        """
+        )
+        result = pytester.runpytest_subprocess("--better-report")
+        assert result.ret == pytest.ExitCode.OK, f"Expected OK, got {result.ret}"
+        test_file = pytester.path / "results_output" / TEST_RESULTS_FILENAME
+        data = json.loads(test_file.read_text())
+        test_entry = next(iter(data.values()))
+        assert test_entry["test_status"] == "skipped", f"Expected 'skipped', got {test_entry['test_status']}"

@@ -6,13 +6,13 @@ from pytest_plugins.models.status import ExecutionStatus
 @dataclass
 class TestData:
     test_file_name: str
-    class_test_name: str
+    class_test_name: str | None
     test_name: str
     pytest_test_name: str
     test_full_name: str
     test_full_path: str
     test_status: ExecutionStatus = ExecutionStatus.COLLECTED
-    test_parameters: dict[str, str] | None = None
+    test_parameters: dict[str, object] | None = None
     test_markers: list | None = None
     test_start_time: str | None = None
     test_end_time: str | None = None
