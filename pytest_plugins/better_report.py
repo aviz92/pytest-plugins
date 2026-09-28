@@ -259,7 +259,7 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
     outcome = yield
     report = outcome.get_result()
 
-    if report.when != "call" or not item.config.option.better_report:
+    if report.when not in ["setup", "call"]:
         return
 
     if not test_item:
@@ -270,12 +270,12 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
         test_item.test_status = ExecutionStatus.XFAIL  # pylint: disable=R0204
     elif hasattr(report, "wasxfail") and report.passed:
         test_item.test_status = ExecutionStatus.XPASS
-    elif report.passed:
-        test_item.test_status = ExecutionStatus.PASSED
     elif report.failed:
         test_item.test_status = ExecutionStatus.FAILED
     elif report.skipped:
         test_item.test_status = ExecutionStatus.SKIPPED
+    elif report.when == "call" and report.passed:
+        test_item.test_status = ExecutionStatus.PASSED
 
     if call.excinfo:
         exception_message = str(call.excinfo.value).split("\nassert", maxsplit=1)[0]
@@ -296,7 +296,6 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
                     }
                 }
             )
-
     else:
         test_item.exception_message = None
 
