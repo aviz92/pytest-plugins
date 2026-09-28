@@ -297,7 +297,9 @@ def pytest_runtest_makereport(item: Function, call: Any) -> Generator[None, Any,
                     }
                 }
             )
-    elif report.when == "call":  # can be removed, the default value is None, but keeping it for clarity
+
+    # can be removed, the default value is None, but keeping it for clarity
+    if report.when == "call" and not call.excinfo:
         test_item.exception_message = None
 
 
